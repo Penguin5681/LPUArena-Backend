@@ -1,4 +1,5 @@
 import { pool } from './pool';
+import { seedQuestions } from './seed-questions';
 
 export async function initDb(): Promise<void> {
   await pool.query(`
@@ -38,4 +39,35 @@ export async function initDb(): Promise<void> {
     END
     $$;
   `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS questions (
+      id BIGSERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      description TEXT NOT NULL,
+      topic TEXT NOT NULL,
+      difficulty TEXT NOT NULL CHECK (difficulty IN ('easy', 'medium', 'hard')),
+      constraints JSONB NOT NULL DEFAULT '[]'::jsonb,
+      examples JSONB NOT NULL DEFAULT '[]'::jsonb,
+      hints JSONB NOT NULL DEFAULT '[]'::jsonb,
+      time_complexity TEXT,
+      space_complexity TEXT,
+      extra JSONB NOT NULL DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS questions_difficulty_idx
+    ON questions (difficulty);
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS questions_topic_idx
+    ON questions (topic);
+  `);
+
+  await seedQuestions();
 }

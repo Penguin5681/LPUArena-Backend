@@ -1,0 +1,3085 @@
+[
+  {
+    "title": "Reverse Linked List",
+    "slug": "reverse-linked-list",
+    "description": "Given the head of a singly linked list, reverse the list and return the new head node. You must rearrange the existing nodes so that the pointers reverse direction, without creating new nodes.",
+    "topic": "Linked List",
+    "difficulty": "easy",
+    "constraints": [
+      "The number of nodes in the list is in the range [0, 5000]",
+      "-5000 <= Node.val <= 5000"
+    ],
+    "examples": [
+      {
+        "input": "5 1 2 3 4 5",
+        "output": "5 4 3 2 1"
+      },
+      {
+        "input": "2 1 2",
+        "output": "2 1"
+      },
+      {
+        "input": "0",
+        "output": ""
+      }
+    ],
+    "hints": [
+      "Iterate through the list while readjusting each node's next pointer to reverse the link direction.",
+      "Use two pointers — prev (initially null) and curr (starting at head) — and update them in a loop.",
+      "After the loop, prev will be the new head of the reversed list."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Find Minimum in Rotated Sorted Array",
+    "slug": "find-minimum-rotated-sorted-array",
+    
+    "description": "Suppose an array of length n sorted in ascending order is rotated between 1 and n times. You are given the rotated array `nums` with unique elements, and your task is to find the minimum element. You must write an algorithm that runs in O(log n) time.",
+    "topic": "Binary Search",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 5000",
+      "-5000 <= nums[i] <= 5000",
+      "All the integers of nums are unique.",
+      "nums is guaranteed to be a rotated sorted array."
+    ],
+    "examples": [
+      {
+        "input": "5 3 4 5 1 2",
+        "output": "1"
+      },
+      {
+        "input": "7 4 5 6 7 0 1 2",
+        "output": "0"
+      },
+      {
+        "input": "4 11 13 15 17",
+        "output": "11"
+      }
+    ],
+    "hints": [
+      "Think in terms of binary search: check which half is sorted.",
+      "If nums[mid] > nums[right], then the minimum must be to the right of mid.",
+      "If nums[mid] < nums[right], then the minimum is at mid or to the left of mid."
+    ],
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Longest Substring Without Repeating Characters",
+    "slug": "longest-substring-without-repeating-characters",
+    "description": "Given a string s, find the length of the longest substring that contains no repeating characters. A substring is a contiguous sequence of characters within the string.",
+    "topic": "Sliding Window",
+    "difficulty": "medium",
+    "constraints": [
+      "0 <= s.length <= 5 * 10^4",
+      "s consists of English letters, digits, symbols, and spaces."
+    ],
+    "examples": [
+      {
+        "input": "abcabcbb",
+        "output": "3"
+      },
+      {
+        "input": "bbbbb",
+        "output": "1"
+      },
+      {
+        "input": "pwwkew",
+        "output": "3"
+      }
+    ],
+    "hints": [
+      "Use a sliding window with two pointers (start and end).",
+      "Use a hash map (or array) to track the last seen index of each character.",
+      "When encountering a repeated character within the current window, move start just past its last seen position.",
+      "Track and maximize window length (end - start + 1) as you iterate."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(min(n, m))  // where m is size of charset"
+  },
+  {
+    "title": "Top K Frequent Elements",
+    "slug": "top-k-frequent-elements",
+    "description": "Given a non-empty integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order. It is guaranteed that the answer is unique.",
+    "topic": "Heap",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "k is in the range [1, number of unique elements in nums]"
+    ],
+    "examples": [
+      {
+        "input": "6 1 1 1 2 2 3 2",
+        "output": "1 2"
+      },
+      {
+        "input": "6 7 7 8 9 9 9 1",
+        "output": "9"
+      }
+    ],
+    "hints": [
+      "Count frequencies using a hash map.",
+      "Use a min‑heap of size k to keep the top k elements, with push/pop logic to maintain size.",
+      "Alternatively, use bucket sort: group numbers by frequency into an array of lists indexed by frequency."
+    ],
+    "time_complexity": "O(n + m log k) or O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Valid Anagram",
+    "slug": "valid-anagram",
+    "description": "Given two strings s and t, return true if t is an anagram of s, and false otherwise. An anagram is a rearrangement of all the original letters exactly once.",
+    "topic": "Hash Table",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= s.length, t.length <= 5 × 10⁴",
+      "s and t consist of lowercase English letters."
+    ],
+    "examples": [
+      {
+        "input": "anagram nagaram",
+        "output": "true"
+      },
+      {
+        "input": "rat car",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "If lengths differ, immediately return false.",
+      "Count character occurrences in one string and decrement using the other.",
+      "Use a fixed-size array of size 26, or hash map for flexibility."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1) (or O(k) with hash map, where k ≤ n)"
+  },
+  {
+    "title": "Word Break",
+    "slug": "word-break",
+    "description": "Given a string s and a dictionary of strings wordDict, determine if s can be segmented into a space-separated sequence of one or more dictionary words.",
+    "topic": "Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= s.length <= 300",
+      "1 <= wordDict.length <= 1000",
+      "1 <= wordDict[i].length <= 20"
+    ],
+    "examples": [
+      {
+        "input": "leetcode leet code",
+        "output": "true"
+      },
+      {
+        "input": "applepenapple apple pen",
+        "output": "true"
+      },
+      {
+        "input": "catsandog cats dog sand and cat",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Use a boolean DP array dp of size n + 1, where dp[i] indicates if s[0:i] can be segmented.",
+      "Initialize dp[0] = true (empty string).",
+      "For each i from 1 to n, check all j < i; if dp[j] is true and s[j:i] is in wordDict (use a set), set dp[i] = true.",
+      "Time complexity O(n² · k) where k is max word length; space complexity O(n)."
+    ],
+    "time_complexity": "O(n² · k)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Detect Cycle in a Directed Graph",
+    "slug": "detect-cycle-in-directed-graph",
+    "description": "Given a directed graph represented by its number of vertices and a list of directed edges, determine whether the graph contains at least one cycle (i.e., a path starting and ending at the same vertex following edge directions).",
+    "topic": "Graph",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= V <= 10^5",
+      "0 <= edges.length <= 10^5",
+      "0 <= u, v < V"
+    ],
+    "examples": [
+      {
+        "input": "4 4 0 1 1 2 2 0 2 3",
+        "output": "true"
+      },
+      {
+        "input": "4 4 0 1 0 2 1 2 2 3",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Use Depth‑First Search with a recursion stack (or color marking) to detect back edges.",
+      "Alternatively, apply Kahn’s algorithm for topological sort: if not all vertices are processed, a cycle exists."
+    ],
+    "time_complexity": "O(V + E)",
+    "space_complexity": "O(V)"
+  },
+  {
+    "title": "Search in Rotated Sorted Array",
+    "slug": "search-in-rotated-sorted-array",
+    "description": "Given a sorted array of distinct integers that has been rotated at an unknown pivot, write an algorithm to search for a target value. Return its index if found, otherwise return -1.",
+    "topic": "Binary Search",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "All values in nums are unique",
+      "-10^4 <= nums[i], target <= 10^4"
+    ],
+    "examples": [
+      {
+        "input": "7 4 5 6 7 0 1 2 0",
+        "output": "4"
+      },
+      {
+        "input": "7 4 5 6 7 0 1 2 3",
+        "output": "-1"
+      },
+      {
+        "input": "1 1 0",
+        "output": "-1"
+      }
+    ],
+    "hints": [
+      "Use a modified binary search to handle the rotation.",
+      "At each step, determine which half (left or right) is sorted.",
+      "Decide whether the target lies in the sorted half or the other half, then adjust bounds accordingly."
+    ],
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Kth Largest Element in an Array",
+    "slug": "kth-largest-element-in-an-array",
+    "description": "Given an integer array nums and an integer k, return the kth largest element in the array.",
+    "topic": "Selection / Heap / Quickselect",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "-10^4 <= nums[i] <= 10^4",
+      "1 <= k <= nums.length"
+    ],
+    "examples": [
+      {
+        "input": "6 3 2 1 5 6 4 2",
+        "output": "5"
+      },
+      {
+        "input": "9 3 2 3 1 2 4 5 5 6 4",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "Use a min‑heap of size k to track the k largest elements (O(n log k)).",
+      "Alternatively, use Quickselect (average O(n), worst‑case O(n²))."
+    ],
+    "time_complexity": "O(n log k) or average O(n)",
+    "space_complexity": "O(k) or O(1)"
+  },
+  {
+    "title": "Lowest Common Ancestor of a Binary Tree",
+    "slug": "lowest-common-ancestor-binary-tree",
+    "description": "Given the root of a binary tree with unique values and two nodes p and q, find their lowest common ancestor (LCA), defined as the lowest node in the tree that has both p and q as descendants (a node is allowed to be a descendant of itself).",
+    "topic": "Tree / Graph",
+    "difficulty": "medium",
+    "constraints": [
+      "The number of nodes in the tree is in the range [2, 10^5]",
+      "-10^9 <= Node.val <= 10^9",
+      "All Node.val are unique",
+      "p != q and both exist in the tree"
+    ],
+    "examples": [
+      {
+        "input": "11 3 5 1 6 2 0 8 null null 7 4 5 1",
+        "output": "3"
+      },
+      {
+        "input": "11 3 5 1 6 2 0 8 null null 7 4 5 4",
+        "output": "5"
+      },
+      {
+        "input": "2 1 2 1 2",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Use a single DFS traversal returning a node reference: if the recursive calls for left and right are both non-null, current node is LCA.",
+      "Base case: if current node is null or equals p or equals q, return current node.",
+      "Otherwise, return whichever of left or right is non-null.",
+      "Traversal visits all nodes once (time O(n)), recursion stack at most tree height (space O(h))."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Find Peak Element",
+    "slug": "find-peak-element",
+    "description": "Given a 0‑indexed integer array nums, find an index of a ‘peak’—an element strictly greater than its neighbors. Consider nums[‑1] and nums[n] as −∞. Return any peak's index.",
+    "topic": "Binary Search",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "-2^31 <= nums[i] <= 2^31 − 1",
+      "nums[i] != nums[i+1] for all valid i"
+    ],
+    "examples": [
+      {
+        "input": "4 1 2 3 1",
+        "output": "2"
+      },
+      {
+        "input": "7 1 2 1 3 5 6 4",
+        "output": "1 or 5"
+      },
+      {
+        "input": "1 1",
+        "output": "0"
+      }
+    ],
+    "hints": [
+      "Use binary search to find a peak in O(log n).",
+      "At each mid, compare nums[mid] and nums[mid+1]: if nums[mid] > nums[mid+1], go left (including mid), else go right.",
+      "Continue until left == right; that's your peak."
+    ],
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Course Schedule",
+    "slug": "course-schedule",
+    "description": "There are numCourses courses labeled from 0 to numCourses‑1. Given prerequisites as pairs [a, b] meaning to take course a you must first take course b, determine if you can finish all courses (i.e., whether the dependency graph is acyclic).",
+    "topic": "Graph / Topological Sort / Cycle Detection",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= numCourses <= 10^5",
+      "0 <= prerequisites.length <= 10^5",
+      "prerequisites[i].length == 2",
+      "0 <= ai, bi < numCourses",
+      "All pairs are unique."
+    ],
+    "examples": [
+      {
+        "input": "2 1 1 0",
+        "output": "true"
+      },
+      {
+        "input": "2 2 1 0 0 1",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Model courses and prerequisites as a directed graph.",
+      "Detect cycles using DFS with coloring or recursion stack.",
+      "Alternatively, use Kahn's algorithm (BFS) for topological sort and check if it processes all nodes."
+    ],
+    "time_complexity": "O(V + E)",
+    "space_complexity": "O(V + E)"
+  },
+  {
+    "title": "Edit Distance",
+    "slug": "edit-distance",
+    "description": "Given two strings word1 and word2, return the minimum number of operations required to convert word1 into word2. You can insert, delete, or replace a character.",
+    "topic": "Dynamic Programming",
+    "difficulty": "hard",
+    "constraints": [
+      "0 <= word1.length, word2.length <= 500",
+      "word1 and word2 consist of lowercase English letters"
+    ],
+    "examples": [
+      {
+        "input": "horse ros",
+        "output": "3"
+      },
+      {
+        "input": "intention execution",
+        "output": "5"
+      }
+    ],
+    "hints": [
+      "Use a DP table dp[i][j] = min operations to convert word1[0..i‑1] to word2"
+    ]
+  },
+  {
+    "title": "Valid Parentheses",
+    "slug": "valid-parentheses",
+    "description": "Given a string s containing only the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. A valid string must have matching pairs of brackets of the same type, closed in the correct order.",
+    "topic": "Stack / String",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= s.length <= 10^4",
+      "s consists of only '()[]{}'."
+    ],
+    "examples": [
+      {
+        "input": "()",
+        "output": "true"
+      },
+      {
+        "input": "()[]{}",
+        "output": "true"
+      },
+      {
+        "input": "(]",
+        "output": "false"
+      },
+      {
+        "input": "([)]",
+        "output": "false"
+      },
+      {
+        "input": "{[]}",
+        "output": "true"
+      }
+    ],
+    "hints": [
+      "Use a stack to track opening brackets.",
+      "Push openings ('(', '[', '{'). For each closing, check if it matches the top of the stack; if not, return false.",
+      "At the end, the stack should be empty if all are matched properly."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Minimum Window Substring",
+    "slug": "minimum-window-substring",
+    "description": "Given two strings, s (the source string) and t (the target string), find the *smallest substring* of s that contains **all** the characters of t, including duplicates, and return it. If no such substring exists, return the empty string \"\". This problem is case-sensitive (e.g., 'A' ≠ 'a').\n\nFor example, with s = \"ADOBECODEBANC\" and t = \"ABC\", the substring \"BANC\" is the smallest window covering each of 'A', 'B', and 'C'. While \"ADOBEC\" also covers t, \"BANC\" is shorter. If s = \"a\" and t = \"aa\", no valid window exists, so the result is \"\". For s = \"aaflslflsldkalskaaa\" and t = \"aaa\", the answer is \"aaa\", the shortest segment containing three 'a's. Character order in the window need not match t's order; only presence and frequency matter.",
+    "topic": "Sliding Window / Two Pointers",
+    "difficulty": "hard",
+    "constraints": [
+      "1 <= s.length, t.length <= 10^5",
+      "s and t consist of ASCII characters"
+    ],
+    "examples": [
+      {
+        "input": "ADOBECODEBANC ABC",
+        "output": "BANC"
+      },
+      {
+        "input": "a a",
+        "output": "a"
+      },
+      {
+        "input": "a aa",
+        "output": ""
+      },
+      {
+        "input": "aaflslflsldkalskaaa aaa",
+        "output": "aaa"
+      }
+    ],
+    "hints": [
+      "Use two pointers (left and right) to define a sliding window over s.",
+      "Maintain frequency counts: one for required characters from t, and another for counts within the current window.",
+      "Expand the right pointer until the window includes all characters of t (tracking counts and satisfied requirements).",
+      "Then move the left pointer to shrink the window as much as possible while still valid, updating the minimum window when found.",
+      "Repeat until the right pointer reaches the end of s."
+    ],
+    "time_complexity": "O(|s| + |t|)",
+    "space_complexity": "O(1) or O(K)",
+    "K_description": "Number of unique ASCII characters needed (e.g., up to 128)"
+  },
+  {
+    "title": "Reverse Integer",
+    "slug": "reverse-integer",
+    "description": "Given a signed 32-bit integer `x`, return `x` with its digits reversed. If reversing `x` causes the value to go outside the signed 32-bit integer range `[-2^31, 2^31−1]`, return `0`. Avoid using 64-bit integers; handle overflow via pre-checks before each digit is appended.",
+    "topic": "Math",
+    "difficulty": "easy",
+    "constraints": [
+      "−2^31 ≤ x ≤ 2^31−1"
+    ],
+    "examples": [
+      {
+        "input": "123",
+        "output": "321"
+      },
+      {
+        "input": "-123",
+        "output": "-321"
+      },
+      {
+        "input": "120",
+        "output": "21"
+      },
+      {
+        "input": "0",
+        "output": "0"
+      }
+    ],
+    "hints": [
+      "Extract digits with x % 10 and pop by x /= 10.",
+      "Before pushing, check: rev > INT_MAX/10 or (rev == INT_MAX/10 and pop > 7) for overflow.",
+      "Time complexity is O(log₁₀|x|) because operations are per digit. :contentReference[oaicite:0]{index=0}"
+    ],
+    "time_complexity": "O(log₁₀ |x|)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Fizz Buzz",
+    "slug": "fizz-buzz",
+    "description": "Given an integer n, return an array of strings representing the numbers from 1 to n. For multiples of 3, use “Fizz”; for multiples of 5, use “Buzz”; for multiples of both, use “FizzBuzz”. Otherwise, use the number itself.",
+    "topic": "Math / Simulation",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ n ≤ 10^4 (typical)"
+    ],
+    "examples": [
+      {
+        "input": "3",
+        "output": "1 2 Fizz"
+      },
+      {
+        "input": "5",
+        "output": "1 2 Fizz 4 Buzz"
+      }
+    ],
+    "hints": [
+      "Iterate from 1 to n; check divisibility by 3, 5, and both.",
+      "Concatenate strings for clarity or use ordered if‑else.",
+      "Time complexity is O(n), space O(n). :contentReference[oaicite:1]{index=1}"
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Reverse a String",
+    "slug": "reverse-a-string",
+    "description": "Write a function that reverses a string in-place. The input is given as a character array. Modify the array in-place with O(1) extra memory.",
+    "topic": "Two Pointers / Array",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ s.length ≤ 10^5",
+      "s consists of printable ASCII characters"
+    ],
+    "examples": [
+      {
+        "input": "5 h e l l o",
+        "output": "o l l e h"
+      },
+      {
+        "input": "6 H a n n a h",
+        "output": "h a n n a H"
+      }
+    ],
+    "hints": [
+      "Use two pointers `l = 0`, `r = n−1`, swap `s[l]` and `s[r]`, then move inward.",
+      "Stop when l >= r."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Intersection of Two Arrays",
+    "slug": "intersection-of-two-arrays",
+    "description": "Given two integer arrays nums1 and nums2, return an array of their intersection—each element in the result must be unique. The order of results does not matter. Internally, convert one array to a set (or sort both), then iterate through the other to check membership, ensuring no duplicates in the final result.",
+    "topic": "Array / Hash Set",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= nums1.length, nums2.length <= 10^5",
+      "-10^9 <= nums1[i], nums2[i] <= 10^9"
+    ],
+    "examples": [
+      {
+        "input": "4 1 2 2 1 2 2 2",
+        "output": "2"
+      },
+      {
+        "input": "3 4 9 5 5 9 4 9 8 4",
+        "output": "9 4"
+      }
+    ],
+    "hints": [
+      "Use a hash set to store elements of the smaller array and iterate through the larger one.",
+      "Avoid duplicates in result by checking presence in result set.",
+      "Alternatively, sort both arrays and use two pointers to collect unique matches."
+    ],
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(min(n, m))",
+    "notes": "Best approach uses a set or sorting + two pointers :contentReference[oaicite:0]{index=0}"
+  },
+  {
+    "title": "Palindrome Number",
+    "slug": "palindrome-number",
+    "description": "Given a signed integer x, return true if x is a palindrome—meaning it reads the same backward as forward. Negative numbers are not palindromes (e.g., -121 != 121-). You can compare digits without converting to string by reversing half the number or full integer with overflow-safe techniques.",
+    "topic": "Math",
+    "difficulty": "easy",
+    "constraints": [
+      "-2^31 <= x <= 2^31−1"
+    ],
+    "examples": [
+      {
+        "input": "121",
+        "output": "true"
+      },
+      {
+        "input": "-121",
+        "output": "false"
+      },
+      {
+        "input": "10",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Return false immediately for negative numbers.",
+      "A simple solution uses string reversal and comparison.",
+      "To avoid extra space, reverse half the number and compare to the other half."
+    ],
+    "time_complexity": "O(log₁₀ |x|)",
+    "space_complexity": "O(1)",
+    "notes": "Multiple approaches including string reversal and half-integer reversal :contentReference[oaicite:1]{index=1}"
+  },
+  {
+    "title": "Linked List Cycle",
+    "slug": "linked-list-cycle",
+    "description": "Given the head of a singly linked list, determine if the list has a cycle. Return true if there’s a node that can be reached again by continuously following the next pointer. Do this without modifying the list and using O(1) memory.",
+    "topic": "Linked List / Two Pointers",
+    "difficulty": "easy",
+    "constraints": [
+      "The number of nodes is in the range [0, 10^4]",
+      "−10^5 <= Node.val <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "4 3 2 0 -4 1",
+        "output": "true"
+      },
+      {
+        "input": "2 1 2 0",
+        "output": "true"
+      },
+      {
+        "input": "1 1 -1",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Use Floyd’s Tortoise and Hare: move fast pointer by two and slow by one.",
+      "If at any point fast and slow meet, there is a cycle.",
+      "If fast reaches null, no cycle exists."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)",
+    "notes": "Typical cycle detection with two-pointer technique, no web citation needed."
+  },
+  {
+    "title": "Add Two Numbers",
+    "slug": "add-two-numbers",
+    "description": "You are given two non‑empty linked lists representing two non‑negative integers. The digits are stored in reverse order (i.e. the least significant digit comes first), and each node contains a single digit. Add the two numbers and return the sum as a linked list. You must compute digit sums one by one, carrying over any overflow to the next digit, and build the resulting linked list using existing nodes (with a dummy starter node for convenience). If one list is longer than the other, treat missing digits as 0. After processing both lists, if a leftover carry remains, append an additional node for it. You may not convert the lists into integer values due to potential overflow beyond standard integer ranges.",
+    "topic": "Linked List / Math",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= number of nodes in l1, l2 <= 100",
+      "0 <= Node.val <= 9",
+      "Input lists do not contain leading zeros except zero itself"
+    ],
+    "examples": [
+      {
+        "input": "3 2 4 3 3 5 6 4",
+        "output": "7 0 8"
+      },
+      {
+        "input": "1 0 1 0",
+        "output": "0"
+      },
+      {
+        "input": "7 9 9 9 9 9 9 9 4 9 9 9 9",
+        "output": "8 9 9 9 0 0 0 1"
+      }
+    ],
+    "hints": [
+      "Use a dummy head node and a carry variable initialized to 0.",
+      "Iterate while either list has nodes, sum corresponding digits plus carry, create a new node with sum % 10.",
+      "Update carry = sum / 10; move pointers as needed.",
+      "After traversal, if carry > 0, append a final node.",
+      "Do not convert entire list to integer—digit by digit handling avoids overflow and is most efficient."
+    ],
+    "time_complexity": "O(max(N, M))",
+    "space_complexity": "O(max(N, M))"
+  },
+  {
+    "title": "The Skyline Problem",
+    "slug": "the-skyline-problem",
+    "description": "Given a list of buildings in the cityscape, each represented as [Li, Ri, Hi] (left x‑coordinate, right x‑coordinate, and building height), compute the skyline formed by the union of these buildings. The skyline is a list of “key points” [x, y] representing where the outline changes height, capturing the outer silhouette when viewed from afar. Overlapping buildings may cause peaks where the maximum height changes. You must output the minimal set of points that defines the skyline contour.",
+    "topic": "Heap / Sweep Line",
+    "difficulty": "hard",
+    "constraints": [
+      "0 ≤ Li < Ri ≤ INT_MAX",
+      "0 < Hi ≤ INT_MAX",
+      "Number of buildings ≤ 10⁴"
+    ],
+    "examples": [
+      {
+        "input": "5 2 9 10 3 7 15 5 12 12 15 20 10 19 24 8",
+        "output": "2 10 3 15 7 12 12 0 15 10 20 8 24 0"
+      }
+    ],
+    "hints": [
+      "Transform building edges (start and end) into events sorted by x-coordinate.",
+      "Use a max-heap (or multiset) to maintain current active building heights.",
+      "Process events: at a start add height; at an end remove height; when max height changes, record a key point.",
+      "Ensure proper ordering when multiple events share the same x-coordinate (start before end)."
+    ],
+    "time_complexity": "O(N log N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "title": "Palindrome Pairs",
+    "slug": "palindrome-pairs",
+    "description": "Given a list of unique strings words, find all pairs of distinct indices (i, j) such that the concatenation words[i] + words[j] forms a palindrome. You must output all such index pairs without duplication. Efficient algorithms achieve O(total length of all words) runtime by using reverse lookups and palindrome prefix/suffix checks.",
+    "topic": "Hash Table / Trie / String",
+    "difficulty": "hard",
+    "constraints": [
+      "1 <= words.length <= 5000",
+      "0 <= words[i].length <= 300",
+      "All words consist of lowercase English letters."
+    ],
+    "examples": [
+      {
+        "input": "5 abcd dcba lls s sssll",
+        "output": "0 1 1 0 3 2 2 4"
+      },
+      {
+        "input": "3 bat tab cat",
+        "output": "0 1 1 0"
+      },
+      {
+        "input": "2 a  ",
+        "output": "0 1 1 0"
+      }
+    ],
+    "hints": [
+      "Create a hashmap mapping reversed words to indices.",
+      "For each word, split into all prefix and suffix pairs; check if one part is palindrome and the other’s reverse exists in map.",
+      "Handle empty string cases by pairing with palindrome words.",
+      "Avoid duplicates by ensuring i != j and checking both prefix and suffix conditions."
+    ],
+    "time_complexity": "O(Σ |words[i]|²) or optimized O(Σ |words[i]|)",
+    "space_complexity": "O(Σ |words[i]|)"
+  },
+  {
+    "title": "Alien Dictionary",
+    "slug": "alien-dictionary",
+    "description": "Given a sorted list of words in an unknown (alien) language that uses the English alphabet letters, deduce the lexicographical order of characters in that language. You must identify precedence relations between adjacent words by comparing their first differing characters, build a directed graph where edges represent 'comes before', and perform a topological sort over all unique characters. If any cycle or inconsistency exists—such as a longer word appearing before its own prefix—the order is invalid and you should return an empty string. Otherwise, return one valid ordering of the characters.",
+    "topic": "Graph / Topological Sort",
+    "difficulty": "hard",
+    "constraints": [
+      "1 <= words.length <= 100",
+      "1 <= words[i].length <= 100",
+      "words consist of lowercase English letters"
+    ],
+    "examples": [
+      {
+        "input": "5 wrt wrf er ett rftt",
+        "output": "wertf"
+      },
+      {
+        "input": "2 z x",
+        "output": "zx"
+      },
+      {
+        "input": "3 z x z",
+        "output": ""
+      }
+    ],
+    "hints": [
+      "Compare adjacent words to find the first differing character and create a graph edge.",
+      "Use Kahn’s algorithm or DFS-based topological sort with cycle detection.",
+      "Handle the prefix edge-case where a longer word comes before its own prefix."
+    ],
+    "time_complexity": "O(C + Σ |words[i]|)",
+    "space_complexity": "O(C + Σ |words[i]|)",
+    "C_description": "number of unique characters",
+    "notes": "Typical DAG/topological sort on character-level graph. :contentReference[oaicite:0]{index=0}"
+  },
+  {
+    "title": "LRU Cache",
+    "slug": "lru-cache",
+    "description": "Design and implement a data structure for a Least Recently Used (LRU) cache. It must support `get(key)`—returning the value if present, or -1 otherwise—and `put(key, value)`—inserting or updating a value, evicting the least recently used entry if capacity is exceeded. Both operations should run in average O(1) time. Internally, this is achieved by combining a hash map for O(1) key look-up and a doubly linked list to maintain usage order (most-recently used at one end, least-recently used at the other).",
+    "topic": "Design / Data Structure",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= capacity <= 3000",
+      "0 <= key <= 3000",
+      "0 <= value <= 10^4",
+      "At most 3×10^4 calls"
+    ],
+    "examples": [
+      {
+        "input": "10 LRUCache put put get put get put get get get 2 1 1 2 2 1 3 3 2 4 4 1 3 4",
+        "output": "null null null 1 null -1 null -1 3 4"
+      }
+    ],
+    "hints": [
+      "Combine a hash map with a doubly linked list for O(1) operations.",
+      "Move accessed or updated items to the head (most-recently used).",
+      "On insertion past capacity, remove the tail (least-recently used)."
+    ],
+    "time_complexity": "O(1) per operation",
+    "space_complexity": "O(capacity)",
+    "notes": "Uses hashmap + DLL; head = most recent, tail = least. :contentReference[oaicite:1]{index=1}"
+  },
+  {
+    "title": "Find the Duplicate Number",
+    "slug": "find-the-duplicate-number",
+    "description": "Given an array of n + 1 integers where each integer is between 1 and n (inclusive), there is exactly one duplicate number but it could be repeated multiple times. Without modifying the array and using only O(1) extra space, find and return the duplicate number. Do this in less than O(n²) time.",
+    "topic": "Array / Linked List (Cycle Detection)",
+    "difficulty": "medium",
+    "constraints": [
+      "2 <= n <= 10^5",
+      "nums.length = n + 1",
+      "1 <= nums[i] <= n",
+      "Exactly one duplicate exists"
+    ],
+    "examples": [
+      {
+        "input": "5 1 3 4 2 2",
+        "output": "2"
+      },
+      {
+        "input": "5 3 1 3 4 2",
+        "output": "3"
+      }
+    ],
+    "hints": [
+      "Model the array as a linked list where index → nums[index]; the duplicate creates a cycle.",
+      "Use Floyd’s Tortoise and Hare algorithm to detect the cycle and find its entry.",
+      "That entry point is the duplicate value."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)",
+    "notes": "Cycle detection on functional graph. Standard approach for this problem."
+  },
+  {
+    "title": "Largest Rectangle in Histogram",
+    "slug": "largest-rectangle-in-histogram",
+    "description": "Given an array of bar heights representing a histogram (each bar has width 1), compute the area of the largest rectangle that can be formed within the histogram. The rectangle must be fully contained, using contiguous bars, and maximized in area.",
+    "topic": "Stack / Monotonic Stack",
+    "difficulty": "hard",
+    "constraints": [
+      "1 <= heights.length <= 10^5",
+      "0 <= heights[i] <= 10^9"
+    ],
+    "examples": [
+      {
+        "input": "6 2 1 5 6 2 3",
+        "output": "10"
+      },
+      {
+        "input": "2 2 4",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "Use a monotonic increasing stack to track indices of bars.",
+      "When a bar is lower than stack's top, pop and compute area with popped bar as height and width determined by current index and previous stack element."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Number of Islands",
+    "slug": "number-of-islands",
+    "description": "Given a 2D grid of '1's (land) and '0's (water), count the number of islands. An island is a group of '1's connected horizontally or vertically (not diagonally), and surrounded by water or grid boundary. Traverse the grid, use DFS/BFS/Union‑Find to mark visited land, and increment the count each time a new island root is found.",
+    "topic": "Graph / DFS / BFS",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= grid.length, grid[0].length <= 300",
+      "grid[i][j] is '0' or '1'"
+    ],
+    "examples": [
+      {
+        "input": "4 4 1 1 0 0 1 1 0 0 0 0 1 0 0 0 0 1",
+        "output": "3"
+      },
+      {
+        "input": "3 3 1 1 1 0 1 0 1 1 1",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Scan each cell; upon finding '1', increment island count and run DFS/BFS to mark all connected '1's as visited (change to '0' or visit flag).",
+      "Graph traversal runs in O(m*n) time and uses O(m*n) space (worst-case recursion stack or queue)."
+    ],
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(m * n)"
+  },
+  {
+    "title": "Binary Tree Maximum Path Sum",
+    "slug": "binary-tree-maximum-path-sum",
+    "description": "Given the root of a binary tree where each node contains an integer (which may be negative), compute the maximum path sum. A path is any sequence of nodes where each adjacent pair is connected by parent‑child links. The path does not need to start or end at the root, and must contain at least one node. You must consider for each node the maximum downward path starting at that node from either left or right subtree, and also compute the sum passing through the node (which may include both children). Use a recursive DFS to track at each node the best extension to parent, while updating a global maximum path found so far.",
+    "topic": "Tree / DFS",
+    "difficulty": "hard",
+    "constraints": [
+      "Number of nodes in tree: up to ~30,000",
+      "Node values range between -1000 and 1000"
+    ],
+    "examples": [
+      {
+        "input": "3 1 2 3",
+        "output": "6"
+      },
+      {
+        "input": "7 -10 9 20 null null 15 7",
+        "output": "42"
+      }
+    ],
+    "hints": [
+      "Use DFS to recursively compute maximum gain from left and right subtrees (ignore negatives).",
+      "For each node, consider max path through it: node.val + left_gain + right_gain.",
+      "Update global maximum whenever local path sum is higher.",
+      "Return node.val + max(left_gain, right_gain) upward to parent."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h) where h is tree height"
+  },
+  {
+    "title": "Merge k Sorted Lists",
+    "slug": "merge-k-sorted-lists",
+    "description": "You are given an array of k sorted linked lists. Merge them into one sorted linked list that contains all elements from the input lists. Optimal solutions use a min‑heap (priority queue) to extract the current smallest head from among the k lists, appending it to the result, then pushing that list’s next node to the heap. Alternatively, use divide‑and‑conquer by repeatedly merging pairs of lists. Either approach achieves time complexity O(N log k) where N is total nodes, and space O(k) for the heap.",
+    "topic": "Linked List / Heap / Divide and Conquer",
+    "difficulty": "hard",
+    "constraints": [
+      "0 ≤ k ≤ 10^4",
+      "Total number of nodes across all lists ≤ 10^4",
+      "Each list is sorted in ascending order"
+    ],
+    "examples": [
+      {
+        "input": "3 3 1 4 5 3 1 3 4 1 2 6",
+        "output": "1 1 2 3 4 4 5 6"
+      },
+      {
+        "input": "0",
+        "output": ""
+      }
+    ],
+    "hints": [
+      "Initialize a min‑heap with the head node of each non‑empty list.",
+      "Repeatedly pop the smallest node, append to merged list, and push its next node into the heap.",
+      "Alternatively implement recursive pair‑wise merging (divide and conquer).",
+      "Use a dummy head to simplify list splicing."
+    ],
+    "time_complexity": "O(N log k)",
+    "space_complexity": "O(k)"
+  },
+  {
+    "title": "Text Justification",
+    "slug": "text-justification",
+    "description": "Given an array of words and a maximum width maxWidth, format the text such that each line has exactly maxWidth characters and is fully justified (both left and right). You must pack as many words as possible per line, and distribute extra spaces evenly between words; if spaces don't divide evenly, assign more to the left slots. The last line should be left‑justified and no extra spaces between words. Handle edge cases like lines with a single word.",
+    "topic": "String / Simulation",
+    "difficulty": "hard",
+    "constraints": [
+      "1 ≤ words.length ≤ 500",
+      "1 ≤ words[i].length ≤ maxWidth ≤ 100"
+    ],
+    "examples": [
+      {
+        "input": "7 This is an example of text justification. 16",
+        "output": "This    is    an example  of text justification.  "
+      }
+    ],
+    "hints": [
+      "Greedy pack words into a line until adding another would exceed maxWidth.",
+      "Compute total empty spaces needed, distribute evenly between word gaps.",
+      "If only one word fits, left‑justify the line by padding spaces to the right.",
+      "Treat the last line differently: left‑justify with single spaces, pad to maxWidth."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Pair with the Given Sum",
+    "slug": "pair-with-given-sum",
+    "description": "Given an integer array and a target value, determine if there exists any pair of distinct elements whose sum equals exactly the target. You can use different methods: a naive O(n²) check of all pairs; sorting with two‑pointer technique in O(n log n); or the optimal O(n) solution using a hash set to track complements.",
+    "topic": "Array / Hash Table / Two Pointers",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= n <= 10⁵",
+      "-10⁹ <= element values <= 10⁹"
+    ],
+    "examples": [
+      {
+        "input": "5 0 -1 2 -3 1 -2",
+        "output": "true"
+      },
+      {
+        "input": "5 1 -2 1 0 5 0",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Use a hash set: for each value x, check if target − x is already in set; insert x otherwise.",
+      "Alternatively, sort and apply two pointers (left, right) to search pairs in O(n log n)."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Find Duplicates",
+    "slug": "find-duplicates",
+    "description": "Given an array of integers, identify values that appear more than once. Return the list of duplicates (unique values), order does not matter. Use a hash map or set to count occurrences or mark seen values.",
+    "topic": "Hash Table",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= nums.length <= 10⁵",
+      "-10⁹ <= nums[i] <= 10⁹"
+    ],
+    "examples": [
+      {
+        "input": "8 4 3 2 7 8 2 3 1",
+        "output": "2 3"
+      },
+      {
+        "input": "3 1 1 2",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Traverse array, count occurrences in map; add value to result when count becomes 2.",
+      "Ensure duplicates list only contains each duplicate once."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Product of Array Except Self",
+    "slug": "product-of-array-except-self",
+    "description": "Given an array nums, return an output array where each element at index i is the product of all elements in nums except nums[i]. Do so without using division and in O(n) time. Use prefix and suffix product passes: compute left products, then multiply by right products, storing result in one or two arrays.",
+    "topic": "Array / Prefix-Suffix",
+    "difficulty": "medium",
+    "constraints": [
+      "2 <= nums.length <= 10⁵",
+      "-30 <= nums[i] <= 30, and product fits 32-bit"
+    ],
+    "examples": [
+      {
+        "input": "4 1 2 3 4",
+        "output": "24 12 8 6"
+      }
+    ],
+    "hints": [
+      "First pass left‑to‑right: maintain running prefix product (skipping self) and store in result.",
+      "Second pass right‑to‑left: multiply result[i] by suffix product seen so far.",
+      "Use only constant extra space besides output array."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1) extra space"
+  },
+  {
+    "title": "Maximum Product Subarray",
+    "slug": "maximum-product-subarray",
+    "description": "Given an integer array (may contain positives, negatives, zero), find the contiguous subarray within the array that has the maximum product and return that product. Because negatives can flip signs, at each step you must track both the maximum and minimum product ending at that index (Kadane‑like adaptation).",
+    "topic": "Dynamic Programming / Array",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 10⁵",
+      "-10⁹ <= nums[i] <= 10⁹"
+    ],
+    "examples": [
+      {
+        "input": "4 2 3 -2 4",
+        "output": "6"
+      },
+      {
+        "input": "3 -2 0 -1",
+        "output": "0"
+      }
+    ],
+    "hints": [
+      "Maintain current_max and current_min; for each number, compute temp_max = max(n, n*current_max, n*current_min), similarly current_min = min(n, n*current_max_old, n*current_min), then update global result.",
+      "Reset when encountering zero (start new segment)."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Minimum in Rotated Sorted Array",
+    "slug": "find-minimum-rotated-sorted-array",
+    "description": "Suppose a sorted array of unique integers was rotated at an unknown pivot. Find and return the minimum element. The array was originally in strictly increasing order and then rotated, e.g. [3,4,5,1,2]. You must accomplish this in O(log n) time by using a modified binary search: check whether mid is in the rotated portion by comparing with rightmost element, then narrow search to the unsorted half.",
+    "topic": "Binary Search",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 5000",
+      "-5000 <= nums[i] <= 5000",
+      "All values are unique",
+      "nums is a rotated sorted array"
+    ],
+    "examples": [
+      {
+        "input": "5 3 4 5 1 2",
+        "output": "1"
+      },
+      {
+        "input": "7 4 5 6 7 0 1 2",
+        "output": "0"
+      },
+      {
+        "input": "4 11 13 15 17",
+        "output": "11"
+      }
+    ],
+    "hints": [
+      "Use binary search: if nums[mid] > nums[right], the minimum must be in the right half; otherwise it's in left half including mid.",
+      "Stop when left == right; that's the minimum."
+    ],
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Search in Rotated Sorted Array",
+    "slug": "search-in-rotated-sorted-array",
+    "description": "Given a sorted array of distinct integers rotated at some pivot, and a target value, return its index if present, otherwise -1. Achieve O(log n) time by adapting binary search: at each step, determine which side (left–mid or mid–right) is sorted, then decide whether the target lies in that half, adjusting pointers accordingly.",
+    "topic": "Binary Search",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "All values are unique",
+      "-10^4 <= nums[i], target <= 10^4"
+    ],
+    "examples": [
+      {
+        "input": "7 4 5 6 7 0 1 2 0",
+        "output": "4"
+      },
+      {
+        "input": "7 4 5 6 7 0 1 2 3",
+        "output": "-1"
+      },
+      {
+        "input": "1 1 0",
+        "output": "-1"
+      }
+    ],
+    "hints": [
+      "At each mid, check if left half is sorted (nums[left] <= nums[mid]). If so, and target is within, search left; otherwise search right. Vice versa for the right half.",
+      "Continue until left > right; return -1 if not found."
+    ],
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "3‑Sum",
+    "slug": "3-sum",
+    "description": "Given an integer array nums, return all unique triplets [a, b, c] such that a + b + c = 0. Triplets must not duplicate, and indices must be distinct. Use sorting plus two‑pointer technique: fix one element, then use left/right pointers to find pairs summing to the negative of the fixed, skipping duplicates to ensure uniqueness.",
+    "topic": "Two Pointers / Sorting",
+    "difficulty": "medium",
+    "constraints": [
+      "0 <= nums.length <= 3000",
+      "-10^5 <= nums[i] <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "nums = [-1,0,1,2,-1,-4]",
+        "output": "[[-1,-1,1],[-1,0,1]]"
+      }
+    ],
+    "hints": [
+      "Sort nums first to ease duplicate skipping and two‑pointer scanning.",
+      "For each i, skip identical elements. Then set left = i+1, right = end, and move pointers inward based on sum comparison with zero. Skip duplicates during pointer moves."
+    ],
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(log n) due to sort"
+  },
+  {
+    "title": "Container With Most Water",
+    "slug": "container-with-most-water",
+    "description": "Given an array of non‑negative integers heights, each representing a vertical line on the x‑axis, find two lines that together with the x‑axis form a container holding the maximum water. Return the maximum area. Use two pointers left/right starting at ends; compute area as min(height[left],height[right])*(right-left), update max, then move the pointer at the shorter line inward, since height limit is lower there.",
+    "topic": "Two Pointers / Greedy",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= heights.length <= 10^5",
+      "0 <= heights[i] <= 10^9"
+    ],
+    "examples": [
+      {
+        "input": "9 1 8 6 2 5 4 8 3 7",
+        "output": "49"
+      },
+      {
+        "input": "2 1 1",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Initialize left=0, right=n-1. Compute area, then move inward the shorter side pointer to possibly find a taller boundary.",
+      "Repeat until left >= right."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Factorial of a Large Number",
+    "slug": "factorial-of-large-number",
+    "description": "Compute the factorial of a non‑negative integer n where n may be large (e.g., up to several thousands). Since the result can have thousands of digits, compute and return it as a string. Use array or list to store individual digits and simulate multiplication digit by digit, carrying values as you go.",
+    "topic": "Math / Big Integer Simulation",
+    "difficulty": "medium",
+    "constraints": [
+      "0 <= n <= 1000 (or more)",
+      "Result length can be thousands of digits"
+    ],
+    "examples": [
+      {
+        "input": "5",
+        "output": "120"
+      },
+      {
+        "input": "30",
+        "output": "265252859812191058636308480000000"
+      }
+    ],
+    "hints": [
+      "Represent result as digit array, initialize with [1]. For k from 2 to n, multiply each digit by k and manage carry.",
+      "Convert final digit array to string."
+    ],
+    "time_complexity": "O(n * d) where d ≈ number of digits",
+    "space_complexity": "O(d)"
+  },
+  {
+    "title": "Trapping Rain Water",
+    "slug": "trapping-rain-water",
+    "description": "Given an array of non-negative integers representing elevation map where the width of each bar is 1, compute how much rainwater it can trap after raining. You must handle large inputs efficiently. Common solutions include: (1) precomputing left max and right max arrays (prefix and suffix) and summing water at each position; (2) two‑pointer technique achieving O(n) time and O(1) extra space; or (3) monotonic stack that processes indices, popping when encountering a taller bar to compute trapped water between bounds.",
+    "topic": "Two Pointers / Stack / DP",
+    "difficulty": "hard",
+    "constraints": [
+      "0 <= elevation[i] <= 10^9",
+      "1 <= number of bars <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "12 0 1 0 2 1 0 1 3 2 1 2 1",
+        "output": "6"
+      },
+      {
+        "input": "6 4 2 0 3 2 5",
+        "output": "9"
+      }
+    ],
+    "hints": [
+      "Compute left_max and right_max arrays to capture maximum heights either side, then sum up min(left_max[i], right_max[i]) − height[i].",
+      "Alternatively, initialize two pointers (left, right), track left_max and right_max, and move pointers inward to accumulate water in one pass.",
+      "Monotonic stack approach: traverse heights; when current bar is taller, pop smaller bars, compute trapped volume using boundaries."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n) for prefix‑suffix or O(1) for two‑pointer optimization",
+    "notes": "Prefix‑suffix DP, two‑pointer, and stack methods all yield O(n) time and are standard interview solutions. :contentReference[oaicite:1]{index=1}"
+  },
+  {
+    "title": "Chocolate Distribution Problem",
+    "slug": "chocolate-distribution-problem",
+    "description": "Given packets of chocolates (each packet has some number of chocolates) and m students, distribute one packet to each student such that the difference between the packet with maximum chocolates and the packet with minimum chocolates is minimized. You should sort the packets and then slide a window of size m across the sorted distribution to find the minimum difference between extreme values in each window.",
+    "topic": "Greedy / Sorting",
+    "difficulty": "easy",
+    "constraints": [
+      "Number of packets and students up to 10⁵",
+      "Chocolate counts non-negative integers"
+    ],
+    "examples": [
+      {
+        "input": "8 3 4 1 9 56 7 9 12 5",
+        "output": "6"
+      }
+    ],
+    "hints": [
+      "Sort the packet counts array.",
+      "Use a sliding window of size m over sorted array, compute diff = arr[i + m − 1] − arr[i], track minimum."
+    ],
+    "time_complexity": "O(n log n + n)",
+    "space_complexity": "O(1) or O(n)"
+  },
+  {
+    "title": "Insert Interval",
+    "slug": "insert-interval",
+    "description": "Given a set of non-overlapping intervals sorted by start time, insert a new interval and merge if necessary to maintain the non-overlapping sorted property. You must scan through the existing intervals, add all intervals ending before the new one, then merge overlapping ones (adjust start to min, end to max), and finally include the rest. Return the merged interval list.",
+    "topic": "Sorting / Interval",
+    "difficulty": "medium",
+    "constraints": [
+      "0 <= intervals.length <= 10^4",
+      "intervals are sorted and non-overlapping"
+    ],
+    "examples": [
+      {
+        "input": "2 1 3 6 9 2 5",
+        "output": "1 5 6 9"
+      },
+      {
+        "input": "5 1 2 3 5 6 7 8 10 12 16 4 8",
+        "output": "1 2 3 10 12 16"
+      }
+    ],
+    "hints": [
+      "Add all intervals ending before newInterval.start.",
+      "Merge overlapping ones by updating newInterval.start = min(...), end = max(...).",
+      "Then add the merged newInterval and the rest."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Non‑overlapping Intervals",
+    "slug": "non-overlapping-intervals",
+    "description": "Given a collection of intervals, determine the minimum number of intervals you need to remove to make the rest non-overlapping. You should sort intervals by end time, then greedily keep intervals with earliest end and discard overlapping ones to maximize count of non-overlapping intervals.",
+    "topic": "Greedy / Interval Scheduling",
+    "difficulty": "medium",
+    "constraints": [
+      "0 <= intervals.length <= 10⁴"
+    ],
+    "examples": [
+      {
+        "input": "4 1 2 2 3 3 4 1 3",
+        "output": "1"
+      },
+      {
+        "input": "3 1 2 1 2 1 2",
+        "output": "2"
+      }
+    ],
+    "hints": [
+      "Sort intervals by end time in ascending order.",
+      "Iterate over sorted list, track last kept end; if next interval.start < last_end, increment removal count."
+    ],
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Set Matrix Zeroes",
+    "slug": "set-matrix-zeroes",
+    "description": "Given an m × n matrix, if any element is 0, set its entire row and column to 0 — do it in-place with constant extra space. You must first scan the matrix to mark which rows and columns contain zeros (typically using flags in first row/column), then in a second pass set elements accordingly, finally handling the first row and first column markers.",
+    "topic": "Matrix / Simulation",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= m, n <= 200"
+    ],
+    "examples": [
+      {
+        "input": "3 4 0 1 2 0 3 4 5 2 1 3 1 5",
+        "output": "0 0 0 0 0 4 5 0 0 3 1 0"
+      }
+    ],
+    "hints": [
+      "Use first row and first column as storage to mark if that row/column should be zeroed.",
+      "Use extra boolean flags for first row and first column to avoid overwriting markers too early.",
+      "Then scan matrix and set zeros based on markers, finally handle first row/column."
+    ],
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(1)",
+    "notes": "Typical in-place flag marking method. :contentReference[oaicite:2]{index=2}"
+  },
+  {
+    "title": "Spiral Matrix",
+    "slug": "spiral-matrix",
+    "description": "Given an m×n matrix, return all its elements in spiral order (clockwise), starting from the top‑left and moving right, then down, left, and up, turning inward until all elements are traversed. You need to handle rectangular matrices and ensure each element is visited exactly once by managing four boundaries (top, bottom, left, right) or simulating the movement with direction vectors and boundary checks.",
+    "topic": "Matrix / Simulation",
+    "difficulty": "medium",
+    "constraints": [
+      "m, n can be different",
+      "Total elements m*n up to ~10⁴ or more"
+    ],
+    "examples": [
+      {
+        "input": "3 3 1 2 3 4 5 6 7 8 9",
+        "output": "1 2 3 6 9 8 7 4 5"
+      },
+      {
+        "input": "3 4 1 2 3 4 5 6 7 8 9 10 11 12",
+        "output": "1 2 3 4 8 12 11 10 9 5 6 7"
+      }
+    ],
+    "hints": [
+      "Maintain four pointers: top, bottom, left, right; traverse and move boundaries in a loop.",
+      "Alternatively, simulate direction vectors and mark visited cells, turning when hitting a boundary or visited cell."
+    ],
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(1) or O(m*n) if using visited flags"
+  },
+  {
+    "title": "Transpose of a Matrix",
+    "slug": "transpose-of-a-matrix",
+    "description": "Given an m×n matrix, return its transpose: a new n×m matrix where the element at (i,j) in the original appears at position (j,i) in the result. When modifying in-place for a square matrix, you can simply swap elements across the diagonal.",
+    "topic": "Matrix / Simulation",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ m, n ≤ 1000"
+    ],
+    "examples": [
+      {
+        "input": "2 3 1 2 3 4 5 6",
+        "output": "1 4 2 5 3 6"
+      }
+    ],
+    "hints": [
+      "Create a new matrix result with dimensions n×m, then assign result[j][i] = matrix[i][j].",
+      "For in-place transpose on square matrix, swap matrix[i][j] with matrix[j][i] for i < j."
+    ],
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(n * m) or O(1) in-place for square"
+  },
+  {
+    "title": "Word Search",
+    "slug": "word-search",
+    "description": "Given an m×n board of letters and a word, determine if the word exists in the board by traversing adjacent (horizontally or vertically) cells without reusing any cell. Implement DFS with backtracking from each starting cell: mark visited cells during recursion, explore up/down/left/right, and backtrack (unmark) if the current path fails.",
+    "topic": "Matrix / DFS / Backtracking",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ m, n ≤ 6",
+      "word length ≤ 15"
+    ],
+    "examples": [
+      {
+        "input": "3 4 A B C E S F C S A D E E ABCCED",
+        "output": "true"
+      },
+      {
+        "input": "3 4 A B C E S F C S A D E E SEE",
+        "output": "true"
+      }
+    ],
+    "hints": [
+      "From each cell matching word[0], start DFS with index=0.",
+      "At each step, mark current cell visited to avoid reuse, explore neighbors, backtrack by unmarking."
+    ],
+    "time_complexity": "O(m * n * 4^L) where L is word length",
+    "space_complexity": "O(L)"
+  },
+  {
+    "title": "Longest Repeating Character Replacement",
+    "slug": "longest-repeating-character-replacement",
+    "description": "Given a string s and integer k, return the length of the longest substring you can get by replacing at most k characters such that all characters in the substring are the same. Use a sliding window to maintain counts of characters, track the most frequent char in the window, and ensure that (window size − max_freq) ≤ k; if violated, shrink window.",
+    "topic": "String / Sliding Window",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ s.length ≤ 10⁵",
+      "0 ≤ k ≤ s.length"
+    ],
+    "examples": [
+      {
+        "input": "AABABBA 1",
+        "output": "4"
+      },
+      {
+        "input": "ABAB 2",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "Maintain counts array and max_count of any character in window.",
+      "Expand window until replacements needed > k, then move start pointer."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Smallest Window Containing All Characters",
+    "slug": "smallest-window-containing-all-characters",
+    "description": "Given strings s and t, find the smallest substring of s that contains every character in t (including duplicates). Use the standard sliding window approach: maintain frequency map of t, expand right pointer adding chars to window, count matches, then contract left pointer while window remains valid; track minimal window seen.",
+    "topic": "String / Sliding Window",
+    "difficulty": "hard",
+    "constraints": [
+      "1 ≤ |s|, |t| ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "ADOBECODEBANC ABC",
+        "output": "BANC"
+      },
+      {
+        "input": "a a",
+        "output": "a"
+      }
+    ],
+    "hints": [
+      "Count characters in t; use two pointers l and r over s.",
+      "Increment match count when window covers required char; when fully covered, move l to shrink."
+    ],
+    "time_complexity": "O(|s| + |t|)",
+    "space_complexity": "O(K)"
+  },
+  {
+    "title": "Print All Anagrams Together",
+    "slug": "print-all-anagrams-together",
+    "description": "Given an array of strings, group all anagrams together such that each group contains words made up of the same characters in any order. You should return a list of lists, where each sublist contains all words that are anagrams of one another. A common approach is to sort the characters of each word (or count character frequencies) and use the resulting string as a key in a hash map to accumulate groups.",
+    "topic": "Hash Table / String",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= number of words <= 10^5",
+      "Each word length ≤ 100"
+    ],
+    "examples": [
+      {
+        "input": "6 eat tea tan ate nat bat",
+        "output": "eat tea ate tan nat bat"
+      }
+    ],
+    "hints": [
+      "Sort each word and use the sorted string as a key in a map.",
+      "Alternatively, count character frequencies and use a tuple or stringified count as key."
+    ],
+    "time_complexity": "O(N·L·log L) or O(N·L)",
+    "space_complexity": "O(N·L)"
+  },
+  {
+    "title": "Sentence Palindrome",
+    "slug": "sentence-palindrome",
+    "description": "Given a string containing letters, punctuation, spaces, etc., determine whether it is a palindrome considering only alphanumeric characters and ignoring cases. You should preprocess by filtering out non-alphanumeric characters and converting to a common case, then use two pointers to compare characters from both ends to check for palindrome status.",
+    "topic": "String / Two Pointers",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= s.length <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "A man, a plan, a canal: Panama",
+        "output": "true"
+      },
+      {
+        "input": "race a car",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Filter s to keep only lowercase alphanumeric chars.",
+      "Use left and right pointers to compare filtered string until they cross."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Longest Palindromic Substring",
+    "slug": "longest-palindromic-substring",
+    "description": "Given a string s, find the longest contiguous substring that reads the same backward as forward. Typical efficient solutions include dynamic programming (using an n×n DP table where dp[i][j] indicates palindrome status, built bottom-up) or center-expansion (treat each index as center and expand outward). When implemented correctly, center-expansion runs in O(n²) time and O(1) space. :contentReference[oaicite:0]{index=0}",
+    "topic": "String / Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= s.length <= 1000"
+    ],
+    "examples": [
+      {
+        "input": "babad",
+        "output": "bab"
+      },
+      {
+        "input": "cbbd",
+        "output": "bb"
+      }
+    ],
+    "hints": [
+      "Use a DP table: dp[i][i] = true; extend substrings by matching ends and checking dp[i+1][j−1].",
+      "Alternatively, for each index, expand around odd and even centers to find maximum palindrome length."
+    ],
+    "time_complexity": "O(n²)",
+    "space_complexity": "O(n²) or O(1)"
+  },
+  {
+    "title": "Palindromic Substrings",
+    "slug": "palindromic-substrings",
+    "description": "Return the total number of palindromic substrings in a string s. A substring is defined by its start and end indices and is considered distinct even if the content is the same. Efficient solutions include expanding around each potential center (odd/even) to count palindromes in O(n²) time, or dynamic programming using a table dp[i][j] to record palindrome status. :contentReference[oaicite:1]{index=1}",
+    "topic": "String / Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= s.length <= 1000"
+    ],
+    "examples": [
+      {
+        "input": "aaa",
+        "output": "6"
+      },
+      {
+        "input": "abc",
+        "output": "3"
+      }
+    ],
+    "hints": [
+      "For each index, expand around center (twice for odd & even palindromes) and count valid expansions.",
+      "DP approach: dp[i][i] = true, dp[i][j] = (s[i]==s[j] && dp[i+1][j−1]), accumulate counts."
+    ],
+    "time_complexity": "O(n²)",
+    "space_complexity": "O(n²) or O(1)"
+  },
+  {
+    "title": "Longest Common Prefix",
+    "slug": "longest-common-prefix",
+    "description": "Write a function to find the longest common prefix string among an array of strings. If there is no common prefix, return an empty string \"\". Common approaches include: vertical scanning, divide‑and‑conquer, binary search over prefix length, sorting and comparing only first and last strings, or building a Trie.",
+    "topic": "String / Sorting / Divide and Conquer / Trie",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= number of strings <= 10^5",
+      "0 <= strings[i].length <= 10^3",
+      "All strings consist of lowercase English letters."
+    ],
+    "examples": [
+      {
+        "input": "3 flower flow flight",
+        "output": "fl"
+      },
+      {
+        "input": "3 dog racecar car",
+        "output": ""
+      }
+    ],
+    "hints": [
+      "Sort the strings; the LCP of the entire array is the LCP of the first and last strings in sorted order.",
+      "Use binary search on prefix length combined with string comparison.",
+      "Trie: insert all strings and find the common path until a branching or a word‑end."
+    ],
+    "time_complexity": "O(N·M·log N) for sorting approach, or O(N·M) for trie/binary search",
+    "space_complexity": "O(M) or O(N·M) depending on method"
+  },
+  {
+    "title": "Detect Cycle in a Linked List",
+    "slug": "detect-cycle-linked-list",
+    "description": "Given the head of a singly linked list, determine if the list contains a cycle (loop). Return true if any node can be reached again by continuously following next pointers.",
+    "topic": "Linked List / Two Pointers",
+    "difficulty": "easy",
+    "constraints": [
+      "0 <= number of nodes <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "4 3 2 0 -4 1",
+        "output": "true"
+      },
+      {
+        "input": "2 1 2 0",
+        "output": "true"
+      },
+      {
+        "input": "1 1 -1",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Use Floyd’s Tortoise and Hare algorithm: move slow pointer by one step and fast pointer by two steps; if they meet, a cycle exists.",
+      "If fast or fast.next becomes null, there is no cycle."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Remove Nth Node From End of List",
+    "slug": "remove-nth-node-from-end-of-list",
+    "description": "Given the head of a singly linked list, remove the nᵗʰ node from the end and return its head. Use two pointers spaced n steps apart; when the fast pointer reaches the end, the slow pointer is just before the target, enabling O(n) single-pass removal.",
+    "topic": "Linked List / Two Pointers",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= number of nodes <= 10^5",
+      "1 <= n <= length of list"
+    ],
+    "examples": [
+      {
+        "input": "5 1 2 3 4 5 2",
+        "output": "1 2 3 5"
+      },
+      {
+        "input": "1 1 1",
+        "output": ""
+      },
+      {
+        "input": "2 1 2 1",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Advance fast pointer n steps ahead of slow. Then move both until fast reaches the end; slow.next is the node to remove.",
+      "Use a dummy node before head to simplify edge removal."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Reorder List",
+    "slug": "reorder-list",
+    "description": "Given a singly linked list L: L₀→L₁→…→Lₙ, reorder it to: L₀→Lₙ→L₁→Lₙ₋₁→L₂→Lₙ₋₂→… You must do this in-place using O(1) extra memory. Approach: find the middle of the list, reverse the second half, then merge the two halves by alternating nodes.",
+    "topic": "Linked List / Two Pointers / Reversal",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= number of nodes <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "4 1 2 3 4",
+        "output": "1 4 2 3"
+      },
+      {
+        "input": "5 1 2 3 4 5",
+        "output": "1 5 2 4 3"
+      }
+    ],
+    "hints": [
+      "Use fast and slow pointers to find the list's midpoint.",
+      "Reverse the second half in-place.",
+      "Merge the two lists by alternating nodes."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Add 1 to a Number Represented as Linked List",
+    "slug": "add-one-linked-list",
+    "description": "Given a non-negative integer represented as a non-empty linked list of digits (most significant digit at the head), add 1 to the number and return the new list. You must handle digit carry propagation, which may add a new most significant node (e.g., 999 → 1000). Solutions include reversing the list, adding, propagating carry, then reversing back; or using recursion or stack to handle carry from head to tail.",
+    "topic": "Linked List / Math",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= number of nodes <= 10^5",
+      "Each node holds digit 0–9",
+      "Leading zeros are not allowed except for number 0."
+    ],
+    "examples": [
+      {
+        "input": "3 1 2 3",
+        "output": "1 2 4"
+      },
+      {
+        "input": "3 9 9 9",
+        "output": "1 0 0 0"
+      }
+    ],
+    "hints": [
+      "Reverse list, add 1 to head, propagate carry, then reverse back.",
+      "Recursive or stack approaches allow carry handling without modifying list."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1) extra or O(n) for recursion/stack"
+  },
+  {
+    "title": "Middle of a Given Linked List",
+    "slug": "middle-of-linked-list",
+    "description": "Given the head of a singly linked list, return its middle node. If the list has an even number of nodes, return the second middle. Use two pointers—‘slow’ advances one step, ‘fast’ two steps. When ‘fast’ reaches the end, ‘slow’ points to the middle. This achieves O(n) time and O(1) space. Commonly known as the Tortoise and Hare technique.",
+    "topic": "Linked List / Two Pointers",
+    "difficulty": "easy",
+    "constraints": [
+      "1 <= number of nodes <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "5 1 2 3 4 5",
+        "output": "3 4 5"
+      },
+      {
+        "input": "6 1 2 3 4 5 6",
+        "output": "4 5 6"
+      }
+    ],
+    "hints": [
+      "Initialize two pointers slow = fast = head; advance fast by two and slow by one until fast reaches the end."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)",
+    "notes": "Also known as LeetCode 876 :contentReference[oaicite:0]{index=0}"
+  },
+  {
+    "title": "Delete Last Occurrence from Linked List",
+    "slug": "delete-last-occurrence-linked-list",
+    "description": "Given the head of a singly linked list and a key value, remove the **last occurrence** of the key. Traverse the list while tracking the node before each matching node. After traversal, adjust pointers to exclude the last-matched node. Edge cases include deleting head or when the key appears once or multiple times.",
+    "topic": "Linked List",
+    "difficulty": "easy",
+    "constraints": [
+      "0 <= number of nodes <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "5 1 2 3 2 4 2",
+        "output": "1 2 3 4"
+      },
+      {
+        "input": "3 1 2 3 4",
+        "output": "1 2 3"
+      }
+    ],
+    "hints": [
+      "Track last occurrence and its previous node during one pass; after full traversal, if found, delete it by updating previous.next."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Infix to Postfix Expression",
+    "slug": "infix-to-postfix",
+    "description": "Convert a mathematical expression in infix notation (with operators and parentheses) to postfix (Reverse Polish Notation). Use a stack to hold operators based on precedence and associativity: scan tokens left to right, push '(' to stack, on ')' pop until '(', on operator pop stack while top has higher or equal precedence, then push operator. Finally, empty remaining stack.",
+    "topic": "Stack / String",
+    "difficulty": "medium",
+    "constraints": [
+      "Expression length reasonable (e.g., <= 10^4)",
+      "Operators: +, -, *, /, ^ with usual precedence, parentheses allowed"
+    ],
+    "examples": [
+      {
+        "input": "a+b*c",
+        "output": "abc*+"
+      },
+      {
+        "input": "(a+b)*c",
+        "output": "ab+c*"
+      }
+    ],
+    "hints": [
+      "Use a stack for operators; numbers/variables go directly to output, parentheses control stack behavior."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Next Greater Element",
+    "slug": "next-greater-element",
+    "description": "Given an array of integers, find the next greater element for each element: the first element to its right that is larger (or -1 if none). Use a monotonic decreasing stack: traverse from left to right, and when the current element is greater than the top of the stack, pop and assign. Push current onto stack. Finally, any remaining elements have no greater element.",
+    "topic": "Stack / Array",
+    "difficulty": "easy",
+    "constraints": [
+      "0 <= nums.length <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "4 1 3 2 4",
+        "output": "3 4 4 -1"
+      },
+      {
+        "input": "5 6 8 0 1 3",
+        "output": "8 -1 1 3 -1"
+      }
+    ],
+    "hints": [
+      "Maintain a stack of indices whose next greater element isn't found yet; upon seeing a larger current element, pop and assign result."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)",
+    "notes": "Standard monotonic stack solution :contentReference[oaicite:1]{index=1}"
+  },
+  {
+    "title": "Delete Middle Element of a Stack",
+    "slug": "delete-middle-stack",
+    "description": "Given a stack, delete its middle element (1-based index middle = ⌈size/2⌉) without using extra data structures. Use recursion: pop top and recurse until reach middle, then skip pushing middle and re-push others on return.",
+    "topic": "Stack / Recursion",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= number of elements in stack <= 10^5"
+    ],
+    "examples": [
+      {
+        "input": "5 1 2 3 4 5",
+        "output": "1 2 4 5"
+      }
+    ],
+    "hints": [
+      "Recursively pop till middle count, skip that element, then re-push remaining items."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n) for recursion"
+  },
+  {
+    "title": "Check Mirror in N‑ary Tree",
+    "slug": "check-mirror-nary-tree",
+    "description": "Given two n‑ary trees, determine whether they are mirror images of each other. Two trees are mirrors if they have identical structure and node values such that for every node in the first tree, its children in left‑to‑right order correspond to the children of the corresponding node in the second tree in right‑to‑left order. A recursive approach visits nodes in parallel and compares their child lists reversely to verify this property. Efficiently runs in O(n) time, where n is the total number of nodes, and uses O(h) auxiliary space in recursion, where h is tree height.",
+    "topic": "Tree / Recursion",
+    "difficulty": "medium",
+    "constraints": [
+      "Number of nodes in each tree ≤ 10^5"
+    ],
+    "examples": [
+      {
+        "input": "Tree1 = [1->[2,3,4]], Tree2 = [1->[4,3,2]]",
+        "output": "true"
+      }
+    ],
+    "hints": [
+      "Recursively compare root values and ensure the iᵗʰ child of first equals the (n‑1‑i)ᵗʰ child of second.",
+      "Confirm both trees have same number of children at every node."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "The Celebrity Problem",
+    "slug": "celebrity-problem",
+    "description": "Given n people and a function knows(a,b) indicating whether person a knows person b, find if there is a celebrity—someone known by everyone else and who knows no one. Use a two‑pointer elimination approach: start with (i=0, j=n‑1), compare knows(i,j): if true then i cannot be celebrity, else j cannot be, and move the pointers inward. After one pass you have a candidate; verify it with two checks: they don't know anyone, and everyone knows them. This runs in O(n) time with only O(1) extra space. :contentReference[oaicite:0]{index=0}",
+    "topic": "Graph / Two Pointers",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ n ≤ 10^5"
+    ],
+    "examples": [
+      {
+        "input": "3 1 1 0 0 1 0 0 1 1",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Use two pointers to eliminate non-celebrities in one pass.",
+      "Validate candidate by checking their row is all zeros (except self) and column is all ones (except self)."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Length of the Longest Valid Substring",
+    "slug": "longest-valid-parentheses-substring",
+    "description": "Given a string containing '(' and ')', find the length of the longest valid (well‑formed) parentheses substring. Use a stack to store indices of unmatched parentheses, or two-pass counters scanning left→right and right→left to count balanced pairs. Update max length when counts match appropriately.",
+    "topic": "Stack / String",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ s.length ≤ 10^5"
+    ],
+    "examples": [
+      {
+        "input": "(()))())(",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "Push index of ‘(’ onto stack, pop when matching ‘)’, track current valid substring using top-of-stack index.",
+      "Or use two counters: forward/backward scan to avoid stack."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Print Right View of a Binary Tree",
+    "slug": "print-right-view-binary-tree",
+    "description": "Given a binary tree, return the nodes visible when the tree is viewed from the right side. Perform a level‑order traversal (BFS) and record the last node at each level. Alternatively, use DFS prioritizing the right child first and track the deepest level visited to capture the first node per level.",
+    "topic": "Tree / BFS",
+    "difficulty": "easy",
+    "constraints": [
+      "Number of nodes ≤ 10^5"
+    ],
+    "examples": [
+      {
+        "input": "7 1 2 3 null 5 null 4",
+        "output": "1 3 4"
+      }
+    ],
+    "hints": [
+      "BFS: enqueue pairs (node, depth), overwrite result[depth] each time; final list has last nodes.",
+      "DFS: right-first preorder, add node value when first visiting a new level."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Find the First Circular Tour That Visits All",
+    "slug": "gas-station-circular-tour",
+    "description": "Given two arrays gas[] and cost[] of equal length, find the starting gas station index from which you can travel around the circuit once in order without the fuel going negative at any point. Use a greedy one‑pass solution: if current tank ever drops below zero, reset start to next station and add that deficit to total. If total gas ≥ total cost, the chosen start works; otherwise no valid tour exists.",
+    "topic": "Greedy / Array",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ n ≤ 10^5"
+    ],
+    "examples": [
+      {
+        "input": "5 1 2 3 4 5 5 3 4 5 1 2",
+        "output": "3"
+      }
+    ],
+    "hints": [
+      "Track cumulative surplus and deficit; reset start when running sum < 0.",
+      "Check that total surplus ≥ 0 to ensure a solution exists."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Maximum Depth of Binary Tree",
+    "slug": "maximum-depth-binary-tree",
+    "description": "Given the root of a binary tree, compute its maximum depth—the number of nodes along the longest path from the root down to the farthest leaf. If root is null, depth is zero. A simple recursive DFS returns 1 plus the maximum depth of its children. This runs in O(n) time and O(h) space, where h is the tree height, since each node is visited once and recursion stack grows with tree depth. :contentReference[oaicite:0]{index=0}",
+    "topic": "Tree / DFS",
+    "difficulty": "easy",
+    "constraints": [
+      "0 <= number of nodes <= 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "7 3 9 20 null null 15 7",
+        "output": "3"
+      },
+      {
+        "input": "0",
+        "output": "0"
+      }
+    ],
+    "hints": [
+      "If node is null, return 0; otherwise return 1 + max(depth(left), depth(right))."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Check for Mirror Trees",
+    "slug": "check-mirror-tree",
+    "description": "Given two binary trees, determine whether they are mirror images: their structures match when one is flipped left-to-right and all node values match accordingly. Recursively compare if both roots are null or values equal, and left-subtree of one is mirror to right-subtree of the other. This runs in O(n) time and O(h) recursion space.",
+    "topic": "Tree / Recursion",
+    "difficulty": "easy",
+    "constraints": [
+      "0 <= number of nodes in each tree <= 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "7 1 2 2 3 4 4 3 7 1 2 2 3 4 4 3",
+        "output": "true"
+      },
+      {
+        "input": "2 1 2 2 1 null 2",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Recursively check that root1.val == root2.val, then mirror(left1, right2) and mirror(right1, left2)."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Invert/Flip Binary Tree",
+    "slug": "invert-binary-tree",
+    "description": "Given the root of a binary tree, invert it by swapping each node's left and right children. This transforms the tree into its mirror. Implement recursively (swap, then invert both subtrees) or iteratively with a queue/stack (BFS/DFS). Runs in O(n) time, in-place with O(h) space.",
+    "topic": "Tree / DFS / BFS",
+    "difficulty": "easy",
+    "constraints": [
+      "0 <= number of nodes <= 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "7 4 2 7 1 3 6 9",
+        "output": "4 7 2 9 6 3 1"
+      }
+    ],
+    "hints": [
+      "For each node, swap left and right children, then recurse or continue iteratively."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Serialize and Deserialize Binary Tree",
+    "slug": "serialize-deserialize-binary-tree",
+    "description": "Design an algorithm to serialize a binary tree into a string and deserialize it back to the exact same structure. A common method uses preorder traversal, writing node values and using a special marker (like '#') for nulls. During deserialization, read tokens and rebuild the tree recursively. Both operations run in O(n) time and use O(n) space. :contentReference[oaicite:1]{index=1}",
+    "topic": "Tree / Design",
+    "difficulty": "hard",
+    "constraints": [
+      "0 <= number of nodes <= 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "7 1 2 3 null null 4 5",
+        "output": "1,2,#,#,3,4,#,#,5,#,#"
+      }
+    ],
+    "hints": [
+      "For serialize: preorder with null markers. For deserialize: read stream and recursively rebuild nodes."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Subtree of Another Tree",
+    "slug": "subtree-of-another-tree",
+    "description": "Given two binary trees, determine if one is a subtree of the other—i.e., there exists a node in the main tree such that the subtree rooted there matches exactly the other tree in both structure and node values. Use DFS on the main tree to locate candidate roots, then check via isSameTree recursion. This runs in O(m·n) worst-case but often faster in practice.",
+    "topic": "Tree / DFS",
+    "difficulty": "medium",
+    "constraints": [
+      "0 <= number of nodes in both trees <= 10⁴"
+    ],
+    "examples": [
+      {
+        "input": "5 3 4 5 1 2 3 4 1 2",
+        "output": "true"
+      },
+      {
+        "input": "10 3 4 5 1 2 null null null null 0 3 4 1 2",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Traverse tree; upon matching values, call isSameTree to verify full subtree equality."
+    ],
+    "time_complexity": "O(m·n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+    "slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+    "description": "Given two integer arrays, `preorder` and `inorder`, representing the preorder (root-left-right) and inorder (left-root-right) traversals of the same binary tree with unique values, reconstruct and return the original tree. To solve it efficiently, use the fact that the first element in `preorder` is the root, locate its index in `inorder`, and recursively build left and right subtrees using segments of these arrays. Use a hashmap to get the index lookup in O(1) time, achieving overall O(n) runtime and O(n) auxiliary space. :contentReference[oaicite:0]{index=0}",
+    "topic": "Tree / Recursion",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= preorder.length == inorder.length <= 3000",
+      "All values are unique and present in both arrays"
+    ],
+    "examples": [
+      {
+        "input": "5 3 9 20 15 7 5 9 3 15 20 7",
+        "output": "7 3 9 20 null null 15 7"
+      }
+    ],
+    "hints": [
+      "The first value in preorder is the root; find it in inorder.",
+      "Recursively construct left subtree from elements left of root in inorder, and right subtree from right segment.",
+      "Use a hashmap mapping inorder values→indices for O(1) lookups."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Validate Binary Search Tree",
+    "slug": "validate-binary-search-tree",
+    "description": "Given the root of a binary tree, determine if it's a valid binary search tree (BST). A valid BST has for every node that all nodes in its left subtree are smaller and all nodes in its right subtree are larger. Use recursion with min/max boundaries: for each node, ensure node.val is within (low, high), recursively check left subtree with updated upper bound and right subtree with updated lower bound. Alternately, perform in-order traversal ensuring strictly increasing order.",
+    "topic": "Tree / Recursion",
+    "difficulty": "medium",
+    "constraints": [
+      "Number of nodes ≤ 10⁵",
+      "Node values are integers"
+    ],
+    "examples": [
+      {
+        "input": "3 2 1 3",
+        "output": "true"
+      },
+      {
+        "input": "7 5 1 4 null null 3 6",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Recursively pass down valid min/max allowed values.",
+      "Or use in-order traversal and check if values are strictly increasing."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Kth Smallest Element in a BST",
+    "slug": "kth-smallest-element-in-bst",
+    "description": "Given the root of a BST and an integer k, return the kᵗʰ smallest element. Use in-order traversal (which visits nodes in sorted order) and keep a counter to identify the kᵗʰ element. You can also augment nodes with subtree node counts to achieve O(h) query time.",
+    "topic": "Tree / DFS",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ k ≤ number of nodes ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "5 3 1 4 null 2 1",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Perform in-order traversal; decrement k; when k hits zero, record current node value."
+    ],
+    "time_complexity": "O(n) or O(h) with augmentation",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Lowest Common Ancestor of BST",
+    "slug": "lowest-common-ancestor-bst",
+    "description": "Given a BST and two nodes p and q, find their lowest common ancestor (LCA)—the deepest node from which both descend. Utilize BST properties: if both p and q are less than root, LCA must be in left subtree; if both greater, in right; otherwise, the current root is the LCA.",
+    "topic": "Tree / BST",
+    "difficulty": "easy",
+    "constraints": [
+      "All node values are unique",
+      "Both p and q exist in the tree"
+    ],
+    "examples": [
+      {
+        "input": "11 6 2 8 0 4 7 9 null null 3 5 2 8",
+        "output": "6"
+      },
+      {
+        "input": "11 6 2 8 0 4 7 9 null null 3 5 2 4",
+        "output": "2"
+      }
+    ],
+    "hints": [
+      "If both values less than root, go left; if both greater, go right; else root is LCA."
+    ],
+    "time_complexity": "O(h)",
+    "space_complexity": "O(h)"
+  },
+  {
+    "title": "Find Median from Data Stream",
+    "slug": "find-median-from-data-stream",
+    "description": "Design a data structure that supports `addNum(num)`—add a number—and `findMedian()`—return the median of all values added so far. Efficient solution uses two heaps: a max‑heap for the lower half, and a min‑heap for the upper half. Balance the heaps so their sizes differ by at most one. The median is the top of the max‑heap (if odd total) or average of both tops (if even). Each operation runs in O(log n) time with O(n) total space. :contentReference[oaicite:1]{index=1}",
+    "topic": "Design / Heap",
+    "difficulty": "hard",
+    "constraints": [
+      "Up to 10⁵ operations"
+    ],
+    "examples": [
+      {
+        "input": "addNum 1 addNum 2 findMedian addNum 3 findMedian",
+        "output": "1.5 2.0"
+      }
+    ],
+    "hints": [
+      "Use two opposing heaps; keep them balanced.",
+      "Max-heap stores lower half, min-heap stores upper half."
+    ],
+    "time_complexity": "O(log n) per insertion, O(1) for median",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Largest Triplet Product in a Stream",
+    "slug": "largest-triplet-product-stream",
+    "description": "Given an integer array, for each index i (starting from the third), report the maximum product of any three numbers among the first i+1 elements. Maintain the top 3 maximum and bottom 2 minimum values seen so far; at each step the max product is max(max1*max2*max3, max1*min1*min2).",
+    "topic": "Heap / Math",
+    "difficulty": "medium",
+    "constraints": [
+      "Array length up to 10⁵",
+      "Values fit in 64-bit"
+    ],
+    "examples": [
+      {
+        "input": "5 1 2 3 4 5",
+        "output": "null null 6 24 60"
+      }
+    ],
+    "hints": [
+      "Track three largest and two smallest values while scanning.",
+      "Compute highest product as max(largest three), or combination with two smallest if product is larger."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Connect N Ropes with Minimum Cost",
+    "slug": "connect-ropes-min-cost",
+    "description": "Given lengths of N ropes, connect them into one rope with minimum cost. The cost to connect two ropes is equal to the sum of their lengths. Use a min‑heap: repeatedly extract two shortest ropes, sum them, add cost, and push back the combined length until one rope remains.",
+    "topic": "Heap / Greedy",
+    "difficulty": "medium",
+    "constraints": [
+      "1 <= N <= 10⁵",
+      "Lengths are positive integers."
+    ],
+    "examples": [
+      {
+        "input": "4 4 3 2 6",
+        "output": "29"
+      }
+    ],
+    "hints": [
+      "Use min-heap to always merge smallest lengths first."
+    ],
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Clone Graph",
+    "slug": "clone-graph",
+    "description": "Given a reference of a node in an undirected connected graph, return a deep copy of the graph. Use BFS or DFS with a hashmap mapping original nodes to their clones, to avoid revisiting. Traverse neighbors, clone them if unseen, and add edges accordingly.",
+    "topic": "Graph / DFS / BFS",
+    "difficulty": "medium",
+    "constraints": [
+      "Number of nodes ≤ 100",
+      "Nodes are labeled uniquely"
+    ],
+    "examples": [
+      {
+        "input": "4 2 2 4 1 1 3 2 2 4 1 1 3",
+        "output": "2 4 1 3 2 4 1 3"
+      }
+    ],
+    "hints": [
+      "Use a hashmap to map original→clone. Traverse with DFS/BFS, clone unseen nodes, build neighbor lists."
+    ],
+    "time_complexity": "O(V + E)",
+    "space_complexity": "O(V)"
+  },
+  {
+    "title": "Pacific Atlantic Water Flow",
+    "slug": "pacific-atlantic-water-flow",
+    "description": "Given an m×n grid of heights, return all coordinates where water can flow both to the Pacific (top/left edges) and Atlantic (bottom/right edges). Use two multi-source DFS/BFS from each ocean’s border to mark reachable cells, then return their intersection.",
+    "topic": "Matrix / DFS / BFS",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ m, n ≤ 200"
+    ],
+    "examples": [
+      {
+        "input": "5 5 1 2 2 3 5 3 2 3 4 4 2 4 5 3 1 6 7 1 4 5 5 1 1 2 4",
+        "output": "0 4 1 3 1 4 2 2 3 0 3 1 4 0"
+      }
+    ],
+    "hints": [
+      "From all Pacific-border cells, DFS/BFS inward, mark reachable. Do same for Atlantic. The intersection set gives answer."
+    ],
+    "time_complexity": "O(m·n)",
+    "space_complexity": "O(m·n)"
+  },
+  {
+    "title": "Longest Consecutive Sequence",
+    "slug": "longest-consecutive-sequence",
+    "description": "Given an unsorted integer array, find the length of the longest consecutive elements sequence. Achieve O(n) time by inserting all values into a hash set, then for each number that is start of a sequence (num-1 not in set), expand forward counting consecutive numbers.",
+    "topic": "Array / Hash Set",
+    "difficulty": "medium",
+    "constraints": [
+      "0 ≤ nums.length ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "6 100 4 200 1 3 2",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "Use a set. For each num without a predecessor, count consecutive successors and track max length."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  {
+    "title": "Snake and Ladder Problem",
+    "slug": "snake-and-ladder-problem",
+    "description": "Model the board (with snakes and ladders) as a directed unweighted graph where each cell is a node and dice throws (1 to 6 steps ahead, including automatic jumps via snakes/ladders) are edges. Find the minimum number of dice throws (shortest path) from start to end using BFS, marking visited cells to avoid repetition. This solves in O(N) time and space for an N‑cell board. :contentReference[oaicite:1]{index=1}",
+    "topic": "Graph / BFS",
+    "difficulty": "medium",
+    "constraints": [
+      "Board size N×N (commonly 100 cells)",
+      "Snakes and ladders defined by teleports between cells"
+    ],
+    "examples": [
+      {
+        "input": "snakes_ladders_map start_position",
+        "output": "minimum_dice_throws"
+      }
+    ],
+    "hints": [
+      "Represent cells as graph nodes; edges are dice outcomes followed by jump if snake/ladder.",
+      "Use BFS starting from cell 0, tracking distance (# dice throws) to reach last cell.",
+      "Mark cells visited to prevent reprocessing."
+    ],
+    "time_complexity": "O(N)",
+    "space_complexity": "O(N)"
+  },
+  {
+    "title": "Bridges in a Graph",
+    "slug": "bridges-in-graph",
+    "description": "Given an undirected graph, identify all edges whose removal increases the number of connected components (bridges). Use Tarjan’s DFS-based algorithm: maintain discovery time and low-link values for each node, and flag an edge (u, v) as a bridge if low[v] > disc[u]. Runs in O(V + E) time. :contentReference[oaicite:2]{index=2}",
+    "topic": "Graph / DFS",
+    "difficulty": "medium",
+    "constraints": [
+      "Graph with V vertices, E edges"
+    ],
+    "examples": [
+      {
+        "input": "graph_adjacency_list",
+        "output": "bridge_edges"
+      }
+    ],
+    "hints": [
+      "During DFS, assign discovery time and low-link values.",
+      "Edge (u, v) is a bridge if low[v] > disc[u].",
+      "Return all such edges after full traversal."
+    ],
+    "time_complexity": "O(V + E)",
+    "space_complexity": "O(V)"
+  },
+  {
+    "title": "Check Bipartiteness of a Graph",
+    "slug": "check-bipartite-graph",
+    "description": "Determine if a graph is bipartite—i.e., its vertices can be colored using two colors such that no edge connects same-colored nodes. Use BFS/DFS to try 2-coloring: start at any unvisited node, assign a color, propagate alternating colors across edges, and detect conflicts to fail. Works in O(V + E) time.",
+    "topic": "Graph / BFS / DFS",
+    "difficulty": "medium",
+    "constraints": [
+      "Graph may be disconnected"
+    ],
+    "examples": [
+      {
+        "input": "adjacency_list",
+        "output": "true/false"
+      }
+    ],
+    "hints": [
+      "Color each component starting from an unvisited node.",
+      "On visiting neighbor, assign opposite color; if conflict, return false."
+    ],
+    "time_complexity": "O(V + E)",
+    "space_complexity": "O(V)"
+  },
+  {
+    "title": "Size of Largest Region in Boolean Matrix",
+    "slug": "largest-region-boolean-matrix",
+    "description": "Given a 2D boolean grid, find the largest connected region of 1s (connectivity in 8 directions). Use DFS/BFS to traverse unvisited 1s and track region sizes—return the maximum. Runs in O(m·n) time with O(m·n) space.",
+    "topic": "Graph / DFS / BFS / Matrix",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ m, n ≤ 200"
+    ],
+    "examples": [
+      {
+        "input": "3 3 1 1 0 0 1 1 0 0 1",
+        "output": "5"
+      }
+    ],
+    "hints": [
+      "For each unvisited 1, run DFS/BFS to mark and count the region.",
+      "Track max region size."
+    ],
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(m * n)"
+  },
+  {
+    "title": "Flood Fill Algorithm",
+    "slug": "flood-fill-algorithm",
+    "description": "Given an image grid and a starting pixel (sr, sc), change the color of the starting region (connected pixels with original color) to a new color using 4-direction connectivity. Implement using DFS or BFS from the start, replacing as you go and avoiding revisiting. Runs in O(m·n).",
+    "topic": "Graph / DFS / BFS / Matrix",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ m, n ≤ 50"
+    ],
+    "examples": [
+      {
+        "input": "image_grid sr sc new_color",
+        "output": "modified_grid"
+      }
+    ],
+    "hints": [
+      "If starting pixel already has newColor, return original.",
+      "Else use DFS/BFS to propagate color change."
+    ],
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(m * n)"
+  },
+  {
+    "title": "Count Ways to Reach Nth Stair",
+    "slug": "count-ways-reach-nth-stair",
+    "description": "A child can climb 1, 2, or 3 steps at a time. Count the number of distinct ways to reach the Nᵗʰ stair. Use DP recurrence dp[i] = dp[i-1] + dp[i-2] + dp[i-3], initializing dp[0]=1, dp[1]=1, dp[2]=2. Solves in O(N) time and O(1) extra space. :contentReference[oaicite:4]{index=4}",
+    "topic": "Dynamic Programming",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ n ≤ 10⁶ (typically)"
+    ],
+    "examples": [
+      {
+        "input": "4",
+        "output": "7"
+      }
+    ],
+    "hints": [
+      "Base cases: ways(0)=1, ways(1)=1, ways(2)=2.",
+      "dp[i] = dp[i-1] + dp[i-2] + dp[i-3]."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Coin Change (Number of Ways)",
+    "slug": "coin-change-ways",
+    "description": "Given coin denominations and a target amount, count the total ways to make that amount. Use DP: dp[0] = 1, then for each coin, for amount from coin to target, dp[j] += dp[j - coin]. Runs in O(n * target) time and O(target) space.",
+    "topic": "Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "Number of coins ≤ 50, target ≤ 10⁴"
+    ],
+    "examples": [
+      {
+        "input": "3 1 2 5 5",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "1D DP: loop over coins in outer loop, amounts in inner loop to avoid overcounting."
+    ],
+    "time_complexity": "O(#coins × amount)",
+    "space_complexity": "O(amount)"
+  },
+  {
+    "title": "Dice Throw",
+    "slug": "dice-throw",
+    "description": "Count ways to get sum 'target' using 'm' throws of a dice with 'k' faces. Use DP: dp[i][j] = sum(dp[i-1][j-x]) for x = 1..k. Optimize to O(m×target×k) time, O(target) space using rolling arrays.",
+    "topic": "Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "m, k, target ≤ 50"
+    ],
+    "examples": [
+      {
+        "input": "2 6 7",
+        "output": "6"
+      }
+    ],
+    "hints": [
+      "Define dp[i][sum] = ways with i dice to get sum; use previous row to compute new."
+    ],
+    "time_complexity": "O(m × k × target)",
+    "space_complexity": "O(target)"
+  },
+  {
+    "title": "Egg Dropping Puzzle",
+    "slug": "egg-dropping-puzzle",
+    "description": "Given K eggs and N floors, find the minimum number of trials needed in the worst case to find the highest safe floor. Use DP: dp[k][m] = maximum floors testable with k eggs and m trials: dp[k][m] = dp[k−1][m−1] + dp[k][m−1] + 1. Find smallest m such that dp[K][m] ≥ N. Runs in O(K log N) time and O(K log N) space.",
+    "topic": "Dynamic Programming",
+    "difficulty": "hard",
+    "constraints": [
+      "K ≤ 100, N ≤ 10⁴"
+    ],
+    "examples": [
+      {
+        "input": "2 10",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "Use optimized DP based on number of trials instead of floors to avoid O(K×N²)."
+    ],
+    "time_complexity": "O(K × log N)",
+    "space_complexity": "O(K × log N)"
+  },
+  {
+    "title": "Matrix Chain Multiplication",
+    "slug": "matrix-chain-multiplication",
+    "description": "Given a sequence of matrices A₁…Aₙ (where the dimensions are specified in an array `dims` such that Aᵢ has dimensions `dims[i-1] × dims[i]`), the goal is not to actually multiply them but to determine the optimal order of multiplication—that is, the parenthesization that minimizes the total number of scalar multiplications. Since matrix multiplication is associative, multiple parenthesizations yield the same result, but their costs differ. Use dynamic programming to compute `dp[i][j]`, the minimum cost to multiply matrices Aᵢ…Aⱼ. Build up solutions by chain length: for each possible split point k between i and j, consider cost = `dp[i][k] + dp[k+1][j] + dims[i-1] × dims[k] × dims[j]`, and take the minimum over all k. This yields an O(n³) time solution with O(n²) space, leveraging optimal substructure and overlapping subproblems. :contentReference[oaicite:0]{index=0}",
+    "topic": "Dynamic Programming",
+    "difficulty": "hard",
+    "constraints": [
+      "1 ≤ n ≤ 500 (chain length)",
+      "Matrix dimensions valid for multiplication"
+    ],
+    "examples": [
+      {
+        "input": "4 10 100 5 50",
+        "output": "7500"
+      }
+    ],
+    "hints": [
+      "Use a 2D DP table `dp[i][j]`; base case is `dp[i][i] = 0` (single matrix).",
+      "Iterate chain length from 2 to n; for each span (i, j), try all k in [i, j-1] to minimize cost.",
+      "Store optimal split points in a separate table to reconstruct actual parenthesization."
+    ],
+    "time_complexity": "O(n³)",
+    "space_complexity": "O(n²)"
+  },
+  {
+    "title": "Combination Sum",
+    "slug": "combination-sum",
+    "description": "Given an array of unique positive integers `candidates` and a target sum, find all unique combinations where elements can be chosen repeatedly and sum exactly to the target. Use backtracking (DFS) to explore inclusion/exclusion paths: sort the array to allow early pruning, then recursively subtract chosen values from the remaining target. Build combination lists incrementally, and when the target hits zero, record the current path. This searches the solution space efficiently, avoiding duplicates and unnecessary branches. :contentReference[oaicite:1]{index=1}",
+    "topic": "Backtracking / DFS",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ candidates.length ≤ 30",
+      "1 ≤ target ≤ 500"
+    ],
+    "examples": [
+      {
+        "input": "4 2 3 6 7 7",
+        "output": "7 2 2 3"
+      }
+    ],
+    "hints": [
+      "Sort the candidates to allow you to stop recursion early when current candidate exceeds remaining target.",
+      "In recursion, allow reuse of current candidate by not advancing the start index for that branch.",
+      "Backtrack by removing the last added number after exploring deeper."
+    ],
+    "time_complexity": "Exponential in worst case (bounded by combinatorial search)",
+    "space_complexity": "O(target/min_candidate)"
+  },
+  {
+    "title": "Count Possible Decodings of a Digit Sequence",
+    "slug": "count-decodings-digit-sequence",
+    "description": "Given a string of digits (e.g., \"226\"), count how many ways it can be decoded into letters (A=1, B=2, …, Z=26). You must account for single-digit and valid two-digit interpretations (10–26), and handle invalid strings like those starting with '0'. A dynamic programming solution builds an array `dp` of length `n+1`, where `dp[i]` = number of ways to decode substring from index `i`. Initialize `dp[n]=1` (empty string) and iterate backwards: if `s[i]≠'0'`, add `dp[i+1]`; if the two-digit number `s[i:i+2]` is between 10 and 26, also add `dp[i+2]`. This yields an O(n) runtime with O(n) space :contentReference[oaicite:0]{index=0}.",
+    "topic": "Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ s.length ≤ 1000"
+    ],
+    "examples": [
+      {
+        "input": "226",
+        "output": "3"
+      }
+    ],
+    "hints": [
+      "Build dp array of size n+1, with dp[n] = 1 for base case.",
+      "At each position i, consider 1-digit decode if s[i] ≠ '0', and 2-digit if valid (10–26).",
+      "Use bottom-up iteration from end to beginning to reuse dp values."
+    ]
+  },
+  {
+    "title": "Unique Paths in a Grid with Obstacles",
+    "slug": "unique-paths-ii",
+    "description": "Given an m×n grid where some cells are blocked (1) and others free (0), count unique paths from top-left to bottom-right moving only right or down. Use dynamic programming: maintain a 2D or 1D dp array where `dp[i][j] = 0` if obstacle, else `dp[i][j] = dp[i-1][j] + dp[i][j-1]`. Initialize dp[0][0] based on whether it’s free. This runs in O(m·n) time and O(n) space by rolling rows.",
+    "topic": "Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ m, n ≤ 100"
+    ],
+    "examples": [
+      {
+        "input": "3 3 0 0 0 0 1 0 0 0 0",
+        "output": "2"
+      }
+    ],
+    "hints": [
+      "Treat obstacle cells as dp = 0 to block paths.",
+      "Initialize first row/column carefully, setting dp to 0 after the first obstacle.",
+      "Use O(n) space by updating a single row iteratively."
+    ]
+  },
+  {
+    "title": "Jump Game",
+    "slug": "jump-game",
+    "description": "Given an array nums where each element represents max jump length, determine if you can reach the last index from the first. Use a greedy algorithm: maintain `maxReach`, initialized to 0; iterate through array—if current index > maxReach, you cannot progress; else update `maxReach = max(maxReach, i + nums[i])`. If `maxReach` ≥ last index by the end, return true; else false.",
+    "topic": "Greedy / Array",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ nums.length ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "5 2 3 1 1 4",
+        "output": "true"
+      },
+      {
+        "input": "5 3 2 1 0 4",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Keep the furthest reachable index and update it at each step.",
+      "If at any point index > maxReach, you cannot move further.",
+      "You don’t need dp arrays—just track a single integer."
+    ]
+  },
+  {
+    "title": "Cutting a Rod",
+    "slug": "rod-cutting",
+    "description": "Given a rod of length n and a price list `price[]`, compute max revenue by cutting the rod into integer lengths. Use DP: dp[i] = maximum profit for length i, computed by `max(price[j] + dp[i-j])` for j from 1 to i. Final answer is dp[n]. This classic O(n²) solution uses O(n) space.",
+    "topic": "Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ n ≤ 1000"
+    ],
+    "examples": [
+      {
+        "input": "8 1 5 8 9 10 17 17 20",
+        "output": "22"
+      }
+    ],
+    "hints": [
+      "Define dp[0]=0, then iterate lengths from 1 to n.",
+      "Try cutting first piece of length j and combine with dp[i-j].",
+      "Track max across all j to fill dp[i]."
+    ]
+  },
+  {
+    "title": "Maximum Product Cutting",
+    "slug": "max-product-cutting",
+    "description": "Given rod length n, cut it into at least two pieces to maximize the product of piece lengths. Define dp[i] = maximum product for length i; iterate j from 1 to i-1 and compute `max(j*(i-j), j*dp[i-j])`. This yields O(n²) time and O(n) space solution.",
+    "topic": "Dynamic Programming",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ n ≤ 1000"
+    ],
+    "examples": [
+      {
+        "input": "10",
+        "output": "36"
+      }
+    ],
+    "hints": [
+      "Consider both direct product j*(i-j) and combining with dp.",
+      "Initialize dp[0]=0, dp[1]=0 (cannot cut).",
+      "Iterate length i from 2 to n, maximizing across all splits."
+    ]
+  },
+  {
+    "title": "Count Number of Ways to Cover a Distance",
+    "slug": "count-ways-cover-distance",
+    "description": "Given total distance N and allowed steps (e.g., [1,3,5]), count ways to reach N. Use DP: dp[0] = 1; for i from 1 to N, `dp[i] = sum(dp[i - step] for step in moves if i-step ≥ 0)`. This runs in O(N·|moves|) time and O(N) space.",
+    "topic": "Dynamic Programming",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ N ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "4 3 1 3 5",
+        "output": "4"
+      }
+    ],
+    "hints": [
+      "Initialize dp[0]=1, others 0.",
+      "For each position, add ways from reachable previous points.",
+      "Return dp[N] after building table."
+    ]
+  },
+  {
+    "title": "Number of 1 Bits",
+    "slug": "number-of-1-bits",
+    "description": "Given an unsigned integer, return its count of '1' bits (Hamming weight). Use Brian Kernighan’s algorithm: repeatedly perform `n &= (n−1)` to clear the lowest set bit, incrementing a counter until n becomes zero. This runs in O(k) time (k = number of set bits) and O(1) space :contentReference[oaicite:1]{index=1}.",
+    "topic": "Bit Manipulation",
+    "difficulty": "easy",
+    "constraints": [
+      "Input fits within 32 or 64 bits"
+    ],
+    "examples": [
+      {
+        "input": "11",
+        "output": "3"
+      }
+    ],
+    "hints": [
+      "Use `while(n) { count++; n &= n - 1; }` to count set bits.",
+      "This is faster than checking every bit."
+    ]
+  },
+  {
+    "title": "Counting Bits",
+    "slug": "counting-bits",
+    "description": "Given integer n, return array `ans[0…n]` where `ans[i]` = number of 1 bits in binary of i. Use DP relation `ans[i] = ans[i >> 1] + (i & 1)` to fill in O(n) time and space.",
+    "topic": "Dynamic Programming / Bit Manipulation",
+    "difficulty": "easy",
+    "constraints": [
+      "0 ≤ n ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "5",
+        "output": "0 1 1 2 1 2"
+      }
+    ],
+    "hints": [
+      "Use relation with right-shifted value plus LSB.",
+      "Loop from 1 to n filling ans array."
+    ]
+  },
+  {
+    "title": "Missing Number",
+    "slug": "missing-number",
+    "description": "Given array of n distinct numbers from [0,n], find the missing number. Use mathematical sum formula or XOR: `missing = n*(n+1)/2 - sum(nums)` or `missing = XOR of all from 0…n and nums`. This runs in O(n) time and O(1) space.",
+    "topic": "Bit Manipulation / Math",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ nums.length = n ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "3 3 0 1",
+        "output": "2"
+      }
+    ],
+    "hints": [
+      "Use XOR: `res = 0; for i in 0…n: res ^= i; for x in nums: res ^= x; return res`.",
+      "Or use arithmetic sum to find missing value."
+    ]
+  },
+  {
+    "title": "Reverse Bits",
+    "slug": "reverse-bits",
+    "description": "Reverse the bits of a 32‑bit unsigned integer. Initialize `res` = 0, then for `i=0…31`, extract LSB from input (`n & 1`), shift it to position `(31-i)`, OR into `res`, and shift input `n >>= 1`. This runs in O(32)=O(1) time :contentReference[oaicite:2]{index=2}.",
+    "topic": "Bit Manipulation",
+    "difficulty": "easy",
+    "constraints": [
+      "Unsigned 32‑bit integer"
+    ],
+    "examples": [
+      {
+        "input": "11",
+        "output": "13"
+      }
+    ],
+    "hints": [
+      "Loop fixed 32 times, shifting result left and adding LSB.",
+      "Use bitwise operations `<<`, `>>`, `&`, and `|`."
+    ]
+  },
+  {
+    "title": "Find XOR of All Subsets of a Set",
+    "slug": "xor-of-all-subsets",
+    "description": "Given a set, find XOR of XOR-values of all subsets. Observe that each element appears in exactly 2ⁿ⁻¹ subsets, so if n>1, each bit with even frequency cancels out; total XOR = 0 if n>1, else it's the element itself.",
+    "topic": "Bit Manipulation / Combinatorics",
+    "difficulty": "easy",
+    "constraints": [
+      "Set size n"
+    ],
+    "examples": [
+      {
+        "input": "3 a b c",
+        "output": "0"
+      }
+    ],
+    "hints": [
+      "Each element appears in half of subsets; XORing it even times yields 0.",
+      "If only one element, return it; else return 0."
+    ]
+  },
+  {
+    "title": "Minimum Size Subarray Sum",
+    "slug": "minimum-size-subarray-sum",
+    "description": "Given an array of positive integers `nums` and a positive integer `target`, find the minimal length of a contiguous subarray such that its sum is at least `target`. Use a sliding window approach to dynamically adjust the window: expand the right pointer to grow the sum, then shrink from the left to minimize length while maintaining the sum ≥ target. If no such subarray exists, return 0. This solution runs in O(n) time using O(1) extra space. :contentReference[oaicite:0]{index=0}",
+    "topic": "Sliding Window / Array",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ nums.length ≤ 10⁵",
+      "1 ≤ target ≤ 10⁹"
+    ],
+    "examples": [
+      {
+        "input": "7 6 2 3 1 2 4 3",
+        "output": "2"
+      },
+      {
+        "input": "4 3 1 4 4",
+        "output": "1"
+      }
+    ],
+    "hints": [
+      "Use two pointers `left` and `right`; expand `right` to add sums, then shrink `left` when sum ≥ target.",
+      "Keep track of the minimum window size each time the sum meets the requirement.",
+      "No nested loops over the whole array—each element enters and leaves the window only once."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Substring with Concatenation of All Words",
+    "slug": "substring-with-concatenation-of-all-words",
+    "description": "Given a string `s` and an array `words` of equal-length strings, find all starting indices of substrings in `s` that are a concatenation of all words exactly once and without any intervening characters. Use a sliding window of total length `wordLen × k`, split into word-sized segments, and track counts with hash maps. Slide the window in `wordLen` shifts to cover all alignments. :contentReference[oaicite:1]{index=1}",
+    "topic": "Sliding Window / Hashing",
+    "difficulty": "hard",
+    "constraints": [
+      "1 ≤ s.length ≤ 10⁴",
+      "1 ≤ words.length ≤ 5×10³",
+      "All words have same length ≤ 30"
+    ],
+    "examples": [
+      {
+        "input": "barfoothefoobarman 2 foo bar",
+        "output": "0 9"
+      },
+      {
+        "input": "wordgoodgoodgoodbestword 4 word good best word",
+        "output": ""
+      }
+    ],
+    "hints": [
+      "Split `s` into chunks of word length; slide the window in `wordLen` steps and check counts using two maps.",
+      "Maintain a running count of matched words and shrink window when encountering too many or unmatched words.",
+      "Reset the counts and adjust the `left` boundary when an invalid word is seen."
+    ],
+    "time_complexity": "O(n * wordLen)",
+    "space_complexity": "O(words.length)"
+  },
+  {
+    "title": "Minimum Window Substring",
+    "slug": "minimum-window-substring",
+    "description": "Given strings `s` and `t`, find the smallest window in `s` which contains all characters of `t` (including multiplicities). Use a sliding window with two pointers, and a frequency map for `t`. Expand the right pointer to include characters, updating counts, and once all required characters are covered, shrink from the left to find a smaller valid window. Continue until the right pointer traverses `s`. Runs in O(n + m) time with O(n + m) space.",
+    "topic": "Sliding Window / Hash Table",
+    "difficulty": "hard",
+    "constraints": [
+      "1 ≤ s.length, t.length ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "ADOBECODEBANC ABC",
+        "output": "BANC"
+      },
+      {
+        "input": "a a",
+        "output": "a"
+      },
+      {
+        "input": "a aa",
+        "output": ""
+      },
+      {
+        "input": "aaflslflsldkalskaaa aaa",
+        "output": "aaa"
+      }
+    ],
+    "hints": [
+      "Keep a frequency map of required chars in `t`, and a `formed` counter of how many unique requirements are met in the current window.",
+      "Expand `right` until the window is valid, then contract `left` to reduce size while maintaining validity.",
+      "Update answer whenever a smaller valid window is found."
+    ],
+    "time_complexity": "O(n + m)",
+    "space_complexity": "O(n + m)"
+  },
+  {
+    "title": "Valid Palindrome",
+    "slug": "valid-palindrome",
+    "description": "Given a string `s`, determine if it reads the same backward as forward, considering only alphanumeric characters and ignoring cases. Use two pointers (`left`, `right`) — advance inward, skipping non-alphanumeric characters, and compare lowercase characters. Return true if all matched, false otherwise. Runs in O(n) time and O(1) space.",
+    "topic": "Two Pointers / String",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ s.length ≤ 10⁵"
+    ],
+    "examples": [
+      {
+        "input": "A man, a plan, a canal: Panama",
+        "output": "true"
+      },
+      {
+        "input": "race a car",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Use `isalnum()` to skip non-alphanumeric characters.",
+      "Convert both chars to lowercase before comparison.",
+      "When characters mismatch, you can immediately return false."
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  {
+    "title": "Is Subsequence",
+    "slug": "is-subsequence",
+    "description": "Given strings `s` and `t`, determine whether `s` is a subsequence of `t` — meaning you can delete zero or more characters from `t` without reordering the remaining characters to get `s`. Use a two-pointer approach: traverse `t` with `j`, and only advance `i` in `s` when characters match. If `i` reaches `s.length`, return `true`; otherwise `false`. This runs in O(|t|) time and O(1) space. :contentReference[oaicite:0]{index=0}",
+    "topic": "String / Two Pointers",
+    "difficulty": "easy",
+    "constraints": [
+      "0 ≤ s.length ≤ 100",
+      "0 ≤ t.length ≤ 10⁴"
+    ],
+    "examples": [
+      {
+        "input": "abc ahbgdc",
+        "output": "true"
+      },
+      {
+        "input": "axc ahbgdc",
+        "output": "false"
+      }
+    ],
+    "hints": [
+      "Use two pointers `i` for `s` and `j` for `t`; only increment `i` on match.",
+      "Iterate until `j` reaches end of `t`, then check if `i == s.length`.",
+      "This is an O(n) greedy method — no DP or backtracking needed."
+    ]
+  },
+  {
+    "title": "Two Sum II – Input Array Is Sorted",
+    "slug": "two-sum-ii-input-array-is-sorted",
+    "description": "Given a 1-indexed sorted array `numbers`, find two distinct numbers that sum to a specific `target` and return their indices (1-based). Use the two-pointer technique: initialize `left` at start and `right` at end; compute sum, compare to target and move pointers inward accordingly. This yields O(n) time and O(1) space. :contentReference[oaicite:1]{index=1}",
+    "topic": "Two Pointers / Array",
+    "difficulty": "easy",
+    "constraints": [
+      "2 ≤ numbers.length ≤ 3×10⁴",
+      "-10³ ≤ numbers[i], target ≤ 10³"
+    ],
+    "examples": [
+      {
+        "input": "numbers = [2,7,11,15], target = 9",
+        "output": "[1,2]"
+      },
+      {
+        "input": "numbers = [-1,0], target = -1",
+        "output": "[1,2]"
+      }
+    ],
+    "hints": [
+      "Initialize `i=0`, `j=n-1`; if sum < target, `i++`, else `j--`.",
+      "Return indices as `[i+1, j+1]` because of 1-based requirement.",
+      "Each pointer moves at most n steps — O(n) time."
+    ]
+  },
+  {
+    "title": "Group Anagrams",
+    "slug": "group-anagrams",
+    "description": "Given a list of strings, group them into lists of anagrams (words composed of the same letters). Use a hash map: for each word, sort its characters (or compute a character frequency signature) and use that as a key, appending the word to the corresponding group. This runs in O(N * L log L) if sorting or O(N * L) if using counting, with L = word length.",
+    "topic": "Hash Table / String",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ words.length ≤ 10⁵",
+      "1 ≤ words[i].length ≤ 100"
+    ],
+    "examples": [
+      {
+        "input": "6 eat tea tan ate nat bat",
+        "output": "eat tea ate tan nat bat"
+      }
+    ],
+    "hints": [
+      "Sort each string to use as a key in a map.",
+      "Alternatively, use a 26-length frequency vector as a signature.",
+      "Append each word to its anagram-group; output the map's values."
+    ]
+  },
+  {
+    "title": "Evaluate Reverse Polish Notation",
+    "slug": "evaluate-reverse-polish-notation",
+    "description": "Evaluate an arithmetic expression given in Reverse Polish Notation (RPN). Valid tokens are integers and operators `+`, `-`, `*`, `/`. Use a stack: push numbers when seen, and upon operator, pop two numbers, apply the operation, then push the result. At the end, the stack has one element: the result. Runs in O(n) time and space. ",
+    "topic": "Stack / Simulation",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ tokens.length ≤ 10⁴",
+      "tokens[i] is an integer or operator"
+    ],
+    "examples": [
+      {
+        "input": "5 2 1 + 3 *",
+        "output": "9"
+      },
+      {
+        "input": "5 4 13 5 / +",
+        "output": "6"
+      }
+    ],
+    "hints": [
+      "When seeing an operator, pop operand2 first then operand1 to preserve order.",
+      "Use integer division that truncates toward zero.",
+      "Final stack top is your answer."
+    ]
+  },
+  {
+    "title": "Daily Temperatures",
+    "slug": "daily-temperatures",
+    "description": "Given an array `T` of daily temperatures, return an array `answer` where `answer[i]` is the number of days you must wait until a warmer temperature appears; or `0` if none. Use a monotonic decreasing stack of indices: iterate from left to right, and while the current temperature is higher than `T[stack.top()]`, pop and compute the distance. Push current index afterward. O(n) time and space.",
+    "topic": "Stack / Monotonic Stack",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ T.length ≤ 10⁵",
+      "30 ≤ T[i] ≤ 100"
+    ],
+    "examples": [
+      {
+        "input": "8 73 74 75 71 69 72 76 73",
+        "output": "1 1 4 2 1 1 0 0"
+      }
+    ],
+    "hints": [
+      "Store indices on a stack where temperatures T[idx] are in decreasing order.",
+      "When current T[i] > T[stack.top()], pop and set `answer[prev] = i - prev`.",
+      "Continue until the stack is empty or the stack’s top has higher temperature; then push i."
+    ]
+  },
+  {
+    "title": "Remove All Adjacent Duplicates in String",
+    "slug": "remove-all-adjacent-duplicates-in-string",
+    "description": "Given a string `s` consisting of lowercase letters, repeatedly remove adjacent pairs of the same character until no more can be removed. Use a stack (or simply a string builder): iterate over `s`, push each character onto the stack; if it matches the top, pop it instead. At the end, the stack’s contents form the final reduced string. This runs in O(n) time with O(n) space :contentReference[oaicite:0]{index=0}.",
+    "topic": "Stack / String",
+    "difficulty": "easy",
+    "constraints": [
+      "1 ≤ s.length ≤ 10⁵",
+      "s contains lowercase letters only"
+    ],
+    "examples": [
+      {
+        "input": "abbaca",
+        "output": "ca"
+      }
+    ],
+    "hints": [
+      "Use a stack-like structure: push letters, and pop if the next letter matches the top.",
+      "This simulates pair removal in one pass without restarting the scan.",
+      "The result is built by concatenating remaining characters after the scan."
+    ]
+  },
+  {
+    "title": "Queue Reconstruction by Height",
+    "slug": "queue-reconstruction-by-height",
+    "description": "Given a list of people as `[h, k]`, where `h` is height and `k` is number of people in front with height ≥ h, reconstruct the queue. Sort the list descending by `h`, then ascending by `k`, and insert each person at index `k` in the result. Taller people are placed first to satisfy constraints easily. This runs in O(n²) time worst-case and uses O(n) space :contentReference[oaicite:3]{index=3}.",
+    "topic": "Greedy / Sorting",
+    "difficulty": "medium",
+    "constraints": [
+      "1 ≤ number of people ≤ 10³",
+      "0 ≤ h, k ≤ 10⁶"
+    ],
+    "examples": [
+      {
+        "input": "6 7 0 4 4 7 1 5 0 6 1 5 2",
+        "output": "5 0 7 0 5 2 6 1 4 4 7 1"
+      }
+    ],
+    "hints": [
+      "Sort descending by height, then ascending by k.",
+      "Insert each person at index k in the result array.",
+      "Because taller persons are fixed first, shorter inserts don't invalidate their k’s."
+    ]
+  }
+]

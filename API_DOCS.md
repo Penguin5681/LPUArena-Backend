@@ -253,6 +253,89 @@ Possible Errors:
 }
 ```
 
+### 5) Get Questions (Paginated)
+
+- Method: `GET`
+- URL: `/api/questions`
+- Description: Fetch questions with pagination.
+- Query Params:
+- `page` (optional, default `1`)
+- `limit` (optional, default `10`, max allowed `20`)
+
+Example:
+
+`GET /api/questions?page=1&limit=20`
+
+Success Response (`200`):
+
+```json
+{
+  "page": 1,
+  "limit": 20,
+  "total": 118,
+  "totalPages": 6,
+  "data": [
+    {
+      "id": "1",
+      "title": "Reverse Linked List",
+      "slug": "reverse-linked-list",
+      "description": "...",
+      "topic": "Linked List",
+      "difficulty": "easy",
+      "constraints": [],
+      "examples": [],
+      "hints": [],
+      "time_complexity": "O(n)",
+      "space_complexity": "O(1)",
+      "extra": {},
+      "created_at": "2026-01-01T00:00:00.000Z",
+      "updated_at": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+Possible Errors:
+
+- `500 Internal Server Error`
+
+```json
+{
+  "message": "Internal server error"
+}
+```
+
+### 6) Get All Questions (No Pagination)
+
+- Method: `GET`
+- URL: `/api/questions/all`
+- Description: Fetch all questions in one response.
+
+Success Response (`200`):
+
+```json
+{
+  "total": 118,
+  "data": [
+    {
+      "id": "1",
+      "title": "Reverse Linked List",
+      "slug": "reverse-linked-list"
+    }
+  ]
+}
+```
+
+Possible Errors:
+
+- `500 Internal Server Error`
+
+```json
+{
+  "message": "Internal server error"
+}
+```
+
 ## Global Error Format
 
 Most error responses follow:
