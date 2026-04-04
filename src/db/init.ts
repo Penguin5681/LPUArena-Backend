@@ -48,6 +48,7 @@ export async function initDb(): Promise<void> {
       description TEXT NOT NULL,
       topic TEXT NOT NULL,
       difficulty TEXT NOT NULL CHECK (difficulty IN ('easy', 'medium', 'hard')),
+      points INTEGER,
       constraints JSONB NOT NULL DEFAULT '[]'::jsonb,
       examples JSONB NOT NULL DEFAULT '[]'::jsonb,
       hints JSONB NOT NULL DEFAULT '[]'::jsonb,
@@ -67,6 +68,46 @@ export async function initDb(): Promise<void> {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS questions_topic_idx
     ON questions (topic);
+  `);
+
+  await pool.query(`
+    ALTER TABLE questions
+    ADD COLUMN IF NOT EXISTS points INTEGER;
+  `);
+
+  await pool.query(`
+    UPDATE questions
+    SET points = CASE difficulty
+      WHEN 'easy' THEN (FLOOR(RANDOM() * 6)::int + 10)
+      WHEN 'medium' THEN (FLOOR(RANDOM() * 7)::int + 16)
+      WHEN 'hard' THEN (FLOOR(RANDOM() * 4)::int + 22)
+    END
+    WHERE points IS NULL;
+  `);
+
+  await pool.query(`
+    ALTER TABLE questions
+    ALTER COLUMN points SET NOT NULL;
+  `);
+
+  await pool.query(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'questions_points_range_by_difficulty_chk'
+      ) THEN
+        ALTER TABLE questions
+        ADD CONSTRAINT questions_points_range_by_difficulty_chk
+        CHECK (
+          (difficulty = 'easy' AND points BETWEEN 10 AND 15)
+          OR (difficulty = 'medium' AND points BETWEEN 16 AND 22)
+          OR (difficulty = 'hard' AND points BETWEEN 22 AND 25)
+        );
+      END IF;
+    END
+    $$;
   `);
 
   await seedQuestions();

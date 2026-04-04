@@ -16,6 +16,28 @@ type RawQuestion = {
   [key: string]: unknown;
 };
 
+function getRandomIntInRange(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomPointsByDifficulty(difficulty: string): number {
+  const normalized = difficulty.toLowerCase().trim();
+
+  if (normalized === 'easy') {
+    return getRandomIntInRange(10, 15);
+  }
+
+  if (normalized === 'medium') {
+    return getRandomIntInRange(16, 22);
+  }
+
+  if (normalized === 'hard') {
+    return getRandomIntInRange(22, 25);
+  }
+
+  throw new Error(`Unsupported difficulty for points assignment: ${difficulty}`);
+}
+
 function toArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [];
 }
@@ -78,6 +100,8 @@ export async function seedQuestions(): Promise<void> {
       const uniqueSlug = occurrence === 1 ? baseSlug : `${baseSlug}-${occurrence}`;
       const normalizedExtra =
         occurrence === 1 ? extra : { ...extra, original_slug: baseSlug, duplicate_index: occurrence };
+      const normalizedDifficulty = difficulty.trim().toLowerCase();
+      const points = randomPointsByDifficulty(normalizedDifficulty);
 
       await client.query(
         `
@@ -87,6 +111,7 @@ export async function seedQuestions(): Promise<void> {
             description,
             topic,
             difficulty,
+            points,
             constraints,
             examples,
             hints,
@@ -94,13 +119,14 @@ export async function seedQuestions(): Promise<void> {
             space_complexity,
             extra
           )
-          VALUES ($1, $2, $3, $4, LOWER($5), $6::jsonb, $7::jsonb, $8::jsonb, $9, $10, $11::jsonb)
+          VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, $9::jsonb, $10, $11, $12::jsonb)
           ON CONFLICT (slug)
           DO UPDATE SET
             title = EXCLUDED.title,
             description = EXCLUDED.description,
             topic = EXCLUDED.topic,
             difficulty = EXCLUDED.difficulty,
+            points = EXCLUDED.points,
             constraints = EXCLUDED.constraints,
             examples = EXCLUDED.examples,
             hints = EXCLUDED.hints,
@@ -114,7 +140,8 @@ export async function seedQuestions(): Promise<void> {
           uniqueSlug,
           description.trim(),
           topic.trim(),
-          difficulty.trim(),
+          normalizedDifficulty,
+          points,
           JSON.stringify(toArray(constraints)),
           JSON.stringify(toArray(examples)),
           JSON.stringify(toArray(hints)),

@@ -7,6 +7,7 @@ export type QuestionRecord = {
   description: string;
   topic: string;
   difficulty: string;
+  points: number;
   constraints: unknown[];
   examples: unknown[];
   hints: unknown[];
@@ -36,6 +37,7 @@ export async function listQuestionsPaginated(params: {
           description,
           topic,
           difficulty,
+          points,
           constraints,
           examples,
           hints,
@@ -69,6 +71,7 @@ export async function listAllQuestions(): Promise<QuestionRecord[]> {
         description,
         topic,
         difficulty,
+        points,
         constraints,
         examples,
         hints,
