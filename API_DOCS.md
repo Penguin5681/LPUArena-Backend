@@ -336,6 +336,73 @@ Possible Errors:
 }
 ```
 
+### 7) Submit Code to Judge0
+
+- Method: `POST`
+- URL: `/api/judge0/submit`
+- Description: Submits code to Judge0 (configured via `JUDGE_ZERO_GCP`) and returns execution result.
+
+Request:
+
+```json
+{
+  "source_code": "print(input())",
+  "language_id": 71,
+  "stdin": "hello judge0",
+  "expected_output": "hello judge0",
+  "cpu_time_limit": 2,
+  "memory_limit": 128000
+}
+```
+
+Success Response (`200`):
+
+```json
+{
+  "message": "Execution completed",
+  "result": {
+    "token": "<judge0-token>",
+    "status": {
+      "id": 3,
+      "description": "Accepted"
+    },
+    "stdout": "hello judge0\n",
+    "stderr": null,
+    "compile_output": null,
+    "message": null,
+    "time": "0.023",
+    "memory": 7864,
+    "exit_code": 0
+  }
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "source_code is required and must be a non-empty string"
+}
+```
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "language_id is required and must be an integer"
+}
+```
+
+- `500 Internal Server Error`
+
+```json
+{
+  "message": "Internal server error"
+}
+```
+
 ## Global Error Format
 
 Most error responses follow:

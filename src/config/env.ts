@@ -15,6 +15,7 @@ function getRequiredEnv(name: string): string {
 export const env = {
   port: Number(process.env.PORT) || 3000,
   databaseUrl: getRequiredEnv('DATABASE_URL'),
+  judgeZeroGcp: getRequiredEnv('JUDGE_ZERO_GCP'),
   jwtSecret: getRequiredEnv('JWT_SECRET'),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
 };
