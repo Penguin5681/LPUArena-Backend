@@ -28,6 +28,16 @@ Authorization: Bearer <token>
 }
 ```
 
+Possible Errors:
+
+- `500 Internal Server Error`
+
+```json
+{
+  "message": "Internal server error"
+}
+```
+
 ### 2) Sign Up
 
 - Method: `POST`
@@ -62,6 +72,56 @@ Success Response (`201`):
     "registrationNumber": "12345678",
     "createdAt": "2026-01-01T00:00:00.000Z"
   }
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request` (missing required fields)
+
+```json
+{
+  "message": "name, email, registrationNumber and password are required"
+}
+```
+
+- `400 Bad Request` (invalid registration number)
+
+```json
+{
+  "message": "registrationNumber must be exactly 8 digits"
+}
+```
+
+- `400 Bad Request` (weak password)
+
+```json
+{
+  "message": "password must be at least 6 characters long"
+}
+```
+
+- `409 Conflict` (email already exists)
+
+```json
+{
+  "message": "Email already exists"
+}
+```
+
+- `409 Conflict` (registration number already exists)
+
+```json
+{
+  "message": "Registration number already exists"
+}
+```
+
+- `500 Internal Server Error`
+
+```json
+{
+  "message": "Internal server error"
 }
 ```
 
@@ -105,6 +165,40 @@ Success Response (`200`):
 }
 ```
 
+Possible Errors:
+
+- `400 Bad Request` (missing credential field or password)
+
+```json
+{
+  "message": "email or registrationNumber, and password are required"
+}
+```
+
+- `400 Bad Request` (invalid registration number format)
+
+```json
+{
+  "message": "registrationNumber must be exactly 8 digits"
+}
+```
+
+- `401 Unauthorized` (invalid credentials)
+
+```json
+{
+  "message": "Invalid credentials"
+}
+```
+
+- `500 Internal Server Error`
+
+```json
+{
+  "message": "Internal server error"
+}
+```
+
 ### 4) Current User Profile
 
 - Method: `GET`
@@ -125,8 +219,46 @@ Success Response (`200`):
 }
 ```
 
-### 5) Live JSON Docs
+Possible Errors:
 
-- Method: `GET`
-- URL: `/api/docs`
-- Description: Returns endpoint docs in JSON.
+- `401 Unauthorized` (missing/invalid token)
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+- `401 Unauthorized` (expired or malformed token)
+
+```json
+{
+  "message": "Invalid or expired token"
+}
+```
+
+- `404 Not Found` (user deleted or unavailable)
+
+```json
+{
+  "message": "User not found"
+}
+```
+
+- `500 Internal Server Error`
+
+```json
+{
+  "message": "Internal server error"
+}
+```
+
+## Global Error Format
+
+Most error responses follow:
+
+```json
+{
+  "message": "<error message>"
+}
+```
