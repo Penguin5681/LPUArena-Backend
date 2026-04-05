@@ -540,3 +540,223 @@ export async function getUserSolvedByDifficulty(userId: number): Promise<{
     byDifficulty,
   };
 }
+
+export async function getFinalLeaderboard(limit: number): Promise<
+  Array<{
+    userId: number;
+    name: string;
+    email: string;
+    registrationNumber: string;
+    createdAt: string;
+    score: number;
+    totalDeductions: number;
+    copyPasteAttempts: number;
+    outOfFocusCount: number;
+    fullscreenExitCount: number;
+    illegalInjectionCount: number;
+    wrongSubmissionCount: number;
+    totalSubmissions: number;
+    totalSolved: number;
+    lastSubmissionAt: string | null;
+    lastCheatAt: string | null;
+  }>
+> {
+  const result = await pool.query<{
+    user_id: number;
+    name: string;
+    email: string;
+    registration_number: string;
+    created_at: string;
+    score: number;
+    total_deductions: number;
+    copy_paste_attempts: number;
+    out_of_focus_count: number;
+    fullscreen_exit_count: number;
+    illegal_injection_count: number;
+    wrong_submission_count: number;
+    total_submissions: number;
+    total_solved: number;
+    last_submission_at: string | null;
+    last_cheat_at: string | null;
+  }>(
+    `
+      WITH event_counts AS (
+        SELECT
+          le.user_id,
+          COUNT(*) FILTER (WHERE le.event_type = 'fullscreen_exit')::int AS fullscreen_exit_count,
+          MAX(le.created_at)::text AS last_cheat_at
+        FROM leaderboard_events le
+        WHERE le.event_type IN ('out_of_focus', 'copy_paste', 'fullscreen_exit', 'illegal_injection')
+        GROUP BY le.user_id
+      ),
+      submission_counts AS (
+        SELECT
+          us.user_id,
+          COUNT(*)::int AS total_submissions,
+          COUNT(DISTINCT us.question_id) FILTER (
+            WHERE us.is_correct = TRUE AND us.question_id IS NOT NULL
+          )::int AS total_solved,
+          MAX(us.created_at)::text AS last_submission_at
+        FROM user_submissions us
+        GROUP BY us.user_id
+      )
+      SELECT
+        u.id AS user_id,
+        u.name,
+        u.email,
+        u.registration_number,
+        u.created_at::text,
+        COALESCE(lp.score, 0) AS score,
+        COALESCE(lp.total_deductions, 0) AS total_deductions,
+        COALESCE(lp.copy_paste_attempts, 0) AS copy_paste_attempts,
+        COALESCE(lp.out_of_focus_count, 0) AS out_of_focus_count,
+        COALESCE(ec.fullscreen_exit_count, 0) AS fullscreen_exit_count,
+        COALESCE(lp.illegal_injection_count, 0) AS illegal_injection_count,
+        COALESCE(lp.wrong_submission_count, 0) AS wrong_submission_count,
+        COALESCE(sc.total_submissions, 0) AS total_submissions,
+        COALESCE(sc.total_solved, 0) AS total_solved,
+        sc.last_submission_at,
+        ec.last_cheat_at
+      FROM users u
+      LEFT JOIN leaderboard_participants lp ON lp.user_id = u.id
+      LEFT JOIN event_counts ec ON ec.user_id = u.id
+      LEFT JOIN submission_counts sc ON sc.user_id = u.id
+      ORDER BY COALESCE(lp.score, 0) DESC, COALESCE(sc.total_solved, 0) DESC, u.created_at ASC
+      LIMIT $1
+    `,
+    [limit]
+  );
+
+  return result.rows.map((row) => ({
+    userId: row.user_id,
+    name: row.name,
+    email: row.email,
+    registrationNumber: row.registration_number,
+    createdAt: row.created_at,
+    score: row.score,
+    totalDeductions: row.total_deductions,
+    copyPasteAttempts: row.copy_paste_attempts,
+    outOfFocusCount: row.out_of_focus_count,
+    fullscreenExitCount: row.fullscreen_exit_count,
+    illegalInjectionCount: row.illegal_injection_count,
+    wrongSubmissionCount: row.wrong_submission_count,
+    totalSubmissions: row.total_submissions,
+    totalSolved: row.total_solved,
+    lastSubmissionAt: row.last_submission_at,
+    lastCheatAt: row.last_cheat_at,
+  }));
+}
+
+export async function getCheatersLeaderboard(limit: number): Promise<
+  Array<{
+    userId: number;
+    name: string;
+    email: string;
+    copyPasteCount: number;
+    outOfFocusCount: number;
+    fullscreenExitCount: number;
+    illegalInjectionCount: number;
+    totalCheatAttempts: number;
+    totalPenaltyPoints: number;
+    lastCheatAt: string;
+  }>
+> {
+  const result = await pool.query<{
+    user_id: number;
+    name: string;
+    email: string;
+    copy_paste_count: number;
+    out_of_focus_count: number;
+    fullscreen_exit_count: number;
+    illegal_injection_count: number;
+    total_cheat_attempts: number;
+    total_penalty_points: number;
+    last_cheat_at: string;
+  }>(
+    `
+      SELECT
+        u.id AS user_id,
+        u.name,
+        u.email,
+        COUNT(*) FILTER (WHERE le.event_type = 'copy_paste')::int AS copy_paste_count,
+        COUNT(*) FILTER (WHERE le.event_type = 'out_of_focus')::int AS out_of_focus_count,
+        COUNT(*) FILTER (WHERE le.event_type = 'fullscreen_exit')::int AS fullscreen_exit_count,
+        COUNT(*) FILTER (WHERE le.event_type = 'illegal_injection')::int AS illegal_injection_count,
+        COUNT(*)::int AS total_cheat_attempts,
+        COALESCE(SUM(le.penalty_points), 0)::int AS total_penalty_points,
+        MAX(le.created_at)::text AS last_cheat_at
+      FROM leaderboard_events le
+      INNER JOIN users u ON u.id = le.user_id
+      WHERE le.event_type IN ('out_of_focus', 'copy_paste', 'fullscreen_exit', 'illegal_injection')
+      GROUP BY u.id, u.name, u.email
+      ORDER BY total_cheat_attempts DESC, total_penalty_points DESC, MAX(le.created_at) DESC
+      LIMIT $1
+    `,
+    [limit]
+  );
+
+  return result.rows.map((row) => ({
+    userId: row.user_id,
+    name: row.name,
+    email: row.email,
+    copyPasteCount: row.copy_paste_count,
+    outOfFocusCount: row.out_of_focus_count,
+    fullscreenExitCount: row.fullscreen_exit_count,
+    illegalInjectionCount: row.illegal_injection_count,
+    totalCheatAttempts: row.total_cheat_attempts,
+    totalPenaltyPoints: row.total_penalty_points,
+    lastCheatAt: row.last_cheat_at,
+  }));
+}
+
+export async function getMostRecentCheater(): Promise<{
+  userId: number;
+  name: string;
+  email: string;
+  eventType: LeaderboardEventType;
+  penaltyPoints: number;
+  metadata: Record<string, unknown>;
+  occurredAt: string;
+} | null> {
+  const result = await pool.query<{
+    user_id: number;
+    name: string;
+    email: string;
+    event_type: LeaderboardEventType;
+    penalty_points: number;
+    metadata: Record<string, unknown>;
+    occurred_at: string;
+  }>(
+    `
+      SELECT
+        u.id AS user_id,
+        u.name,
+        u.email,
+        le.event_type,
+        le.penalty_points,
+        le.metadata,
+        le.created_at::text AS occurred_at
+      FROM leaderboard_events le
+      INNER JOIN users u ON u.id = le.user_id
+      WHERE le.event_type IN ('out_of_focus', 'copy_paste', 'fullscreen_exit', 'illegal_injection')
+      ORDER BY le.created_at DESC
+      LIMIT 1
+    `
+  );
+
+  if (!result.rows[0]) {
+    return null;
+  }
+
+  const row = result.rows[0];
+
+  return {
+    userId: row.user_id,
+    name: row.name,
+    email: row.email,
+    eventType: row.event_type,
+    penaltyPoints: row.penalty_points,
+    metadata: row.metadata || {},
+    occurredAt: row.occurred_at,
+  };
+}

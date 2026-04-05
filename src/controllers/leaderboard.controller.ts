@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { detectIllegalCodeInjection } from '../services/code-security.service';
 import {
+  getCheatersLeaderboard,
+  getFinalLeaderboard,
   getLeaderboard,
+  getMostRecentCheater,
   getUserCurrentPoints,
   getUserPointDeductions,
   getUserSolvedByDifficulty,
@@ -20,6 +23,16 @@ function toPositiveInteger(value: unknown, fallback: number): number {
   }
 
   return parsed;
+}
+
+function toBodyLimit(value: unknown, fallback: number, max: number): number {
+  const parsed = Number(value);
+
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    return fallback;
+  }
+
+  return Math.min(parsed, max);
 }
 
 export async function logParticipantEvent(req: Request, res: Response): Promise<void> {
@@ -154,5 +167,33 @@ export async function getMySolvedByDifficulty(req: Request, res: Response): Prom
 
   res.status(200).json({
     data: solvedData,
+  });
+}
+
+export async function getFinalLeaderboardAdmin(req: Request, res: Response): Promise<void> {
+  const limit = toBodyLimit(req.body.limit, 200, 1000);
+  const rows = await getFinalLeaderboard(limit);
+
+  res.status(200).json({
+    total: rows.length,
+    data: rows,
+  });
+}
+
+export async function getCheatersLeaderboardAdmin(req: Request, res: Response): Promise<void> {
+  const limit = toBodyLimit(req.body.limit, 100, 1000);
+  const rows = await getCheatersLeaderboard(limit);
+
+  res.status(200).json({
+    total: rows.length,
+    data: rows,
+  });
+}
+
+export async function getMostRecentCheaterAdmin(_req: Request, res: Response): Promise<void> {
+  const row = await getMostRecentCheater();
+
+  res.status(200).json({
+    data: row,
   });
 }

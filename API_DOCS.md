@@ -776,6 +776,187 @@ Possible Errors:
 }
 ```
 
+### 16) Admin Final Leaderboard (Password Protected)
+
+- Method: `POST`
+- URL: `/api/leaderboard/admin/final`
+- Description: Returns full leaderboard data with detailed user stats.
+- Auth: Password in request body.
+
+Request:
+
+```json
+{
+  "password": "sdhkljf23173089",
+  "limit": 200
+}
+```
+
+- `limit` is optional (default `200`, max `1000`).
+
+Success Response (`200`):
+
+```json
+{
+  "total": 2,
+  "data": [
+    {
+      "userId": 1,
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "registrationNumber": "12345678",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "score": 42,
+      "totalDeductions": 8,
+      "copyPasteAttempts": 3,
+      "outOfFocusCount": 2,
+      "fullscreenExitCount": 1,
+      "illegalInjectionCount": 0,
+      "wrongSubmissionCount": 5,
+      "totalSubmissions": 27,
+      "totalSolved": 12,
+      "lastSubmissionAt": "2026-01-01T10:00:00.000Z",
+      "lastCheatAt": "2026-01-01T09:00:00.000Z"
+    }
+  ]
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "password is required in request body"
+}
+```
+
+- `403 Forbidden`
+
+```json
+{
+  "message": "Invalid password"
+}
+```
+
+### 17) Admin Cheaters Leaderboard (Password Protected)
+
+- Method: `POST`
+- URL: `/api/leaderboard/admin/cheaters`
+- Description: Returns leaderboard ranked by users with the most cheating attempts.
+- Auth: Password in request body.
+
+Request:
+
+```json
+{
+  "password": "sdhkljf23173089",
+  "limit": 100
+}
+```
+
+- `limit` is optional (default `100`, max `1000`).
+
+Success Response (`200`):
+
+```json
+{
+  "total": 2,
+  "data": [
+    {
+      "userId": 1,
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "copyPasteCount": 4,
+      "outOfFocusCount": 3,
+      "fullscreenExitCount": 1,
+      "illegalInjectionCount": 0,
+      "totalCheatAttempts": 8,
+      "totalPenaltyPoints": 11,
+      "lastCheatAt": "2026-01-01T09:00:00.000Z"
+    }
+  ]
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "password is required in request body"
+}
+```
+
+- `403 Forbidden`
+
+```json
+{
+  "message": "Invalid password"
+}
+```
+
+### 18) Admin Most Recent Cheater (Password Protected)
+
+- Method: `POST`
+- URL: `/api/leaderboard/admin/cheaters/recent`
+- Description: Returns the most recent cheating event with user details.
+- Auth: Password in request body.
+
+Request:
+
+```json
+{
+  "password": "sdhkljf23173089"
+}
+```
+
+Success Response (`200`):
+
+```json
+{
+  "data": {
+    "userId": 1,
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "eventType": "copy_paste",
+    "penaltyPoints": 3,
+    "metadata": {
+      "tabSwitchCount": 1
+    },
+    "occurredAt": "2026-01-01T10:00:00.000Z"
+  }
+}
+```
+
+If no cheating event exists yet:
+
+```json
+{
+  "data": null
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "password is required in request body"
+}
+```
+
+- `403 Forbidden`
+
+```json
+{
+  "message": "Invalid password"
+}
+```
+
 ### Standalone Table Definitions
 
 Leaderboard table creation SQL is maintained in standalone TypeScript at:
