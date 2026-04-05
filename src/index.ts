@@ -10,7 +10,7 @@ import { submissionRouter } from './routes/submission.routes';
 
 const app = express();
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:4173', 'https://algoarena-three.vercel.app'] }));
 app.use(express.json());
 
 app.get('/health', (_req: Request, res: Response) => {
