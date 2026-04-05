@@ -417,3 +417,126 @@ export async function getUserPointDeductions(
     metadata: row.metadata || undefined,
   }));
 }
+
+export async function getUserCurrentPoints(userId: number): Promise<{
+  userId: number;
+  score: number;
+  totalDeductions: number;
+  wrongSubmissionCount: number;
+  illegalInjectionCount: number;
+}> {
+  await pool.query(
+    `
+      INSERT INTO leaderboard_participants (user_id)
+      VALUES ($1)
+      ON CONFLICT (user_id) DO NOTHING
+    `,
+    [userId]
+  );
+
+  const pointsResult = await pool.query<{
+    score: number;
+    total_deductions: number;
+    wrong_submission_count: number;
+    illegal_injection_count: number;
+  }>(
+    `
+      SELECT
+        score,
+        total_deductions,
+        wrong_submission_count,
+        illegal_injection_count
+      FROM leaderboard_participants
+      WHERE user_id = $1
+    `,
+    [userId]
+  );
+
+  if (!pointsResult.rows[0]) {
+    throw new Error('Failed to load user points');
+  }
+
+  const row = pointsResult.rows[0];
+
+  return {
+    userId,
+    score: row.score,
+    totalDeductions: row.total_deductions,
+    wrongSubmissionCount: row.wrong_submission_count,
+    illegalInjectionCount: row.illegal_injection_count,
+  };
+}
+
+type SolvedDifficulty = 'easy' | 'medium' | 'hard';
+
+export async function getUserSolvedByDifficulty(userId: number): Promise<{
+  totalSolved: number;
+  byDifficulty: Record<
+    SolvedDifficulty,
+    {
+      solvedCount: number;
+      problems: Array<{
+        questionId: number;
+        title: string;
+        slug: string;
+      }>;
+    }
+  >;
+}> {
+  const result = await pool.query<{
+    difficulty: SolvedDifficulty;
+    question_id: number;
+    title: string;
+    slug: string;
+  }>(
+    `
+      SELECT
+        q.difficulty,
+        q.id AS question_id,
+        q.title,
+        q.slug
+      FROM user_submissions us
+      INNER JOIN questions q ON q.id = us.question_id
+      WHERE us.user_id = $1
+        AND us.is_correct = TRUE
+        AND us.question_id IS NOT NULL
+      GROUP BY q.difficulty, q.id, q.title, q.slug
+      ORDER BY q.difficulty ASC, q.id ASC
+    `,
+    [userId]
+  );
+
+  const byDifficulty: Record<
+    SolvedDifficulty,
+    {
+      solvedCount: number;
+      problems: Array<{
+        questionId: number;
+        title: string;
+        slug: string;
+      }>;
+    }
+  > = {
+    easy: { solvedCount: 0, problems: [] },
+    medium: { solvedCount: 0, problems: [] },
+    hard: { solvedCount: 0, problems: [] },
+  };
+
+  for (const row of result.rows) {
+    byDifficulty[row.difficulty].problems.push({
+      questionId: row.question_id,
+      title: row.title,
+      slug: row.slug,
+    });
+  }
+
+  byDifficulty.easy.solvedCount = byDifficulty.easy.problems.length;
+  byDifficulty.medium.solvedCount = byDifficulty.medium.problems.length;
+  byDifficulty.hard.solvedCount = byDifficulty.hard.problems.length;
+
+  return {
+    totalSolved:
+      byDifficulty.easy.solvedCount + byDifficulty.medium.solvedCount + byDifficulty.hard.solvedCount,
+    byDifficulty,
+  };
+}

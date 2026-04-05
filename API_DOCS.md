@@ -692,6 +692,90 @@ Possible Errors:
 }
 ```
 
+### 14) Get My Current Points
+
+- Method: `GET`
+- URL: `/api/leaderboard/points`
+- Auth: Required (`Bearer token`)
+- Description: Returns the current score and key deduction counters for the logged-in user.
+
+Success Response (`200`):
+
+```json
+{
+  "data": {
+    "userId": 1,
+    "score": 42,
+    "totalDeductions": 8,
+    "wrongSubmissionCount": 5,
+    "illegalInjectionCount": 0
+  }
+}
+```
+
+Possible Errors:
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### 15) Get My Solved Problems By Difficulty
+
+- Method: `GET`
+- URL: `/api/leaderboard/solved-by-difficulty`
+- Auth: Required (`Bearer token`)
+- Description: Returns solved question breakdown by difficulty for the logged-in user.
+
+Success Response (`200`):
+
+```json
+{
+  "data": {
+    "totalSolved": 3,
+    "byDifficulty": {
+      "easy": {
+        "solvedCount": 2,
+        "problems": [
+          {
+            "questionId": 1,
+            "title": "Two Sum",
+            "slug": "two-sum"
+          }
+        ]
+      },
+      "medium": {
+        "solvedCount": 1,
+        "problems": [
+          {
+            "questionId": 12,
+            "title": "Longest Substring Without Repeating Characters",
+            "slug": "longest-substring-without-repeating-characters"
+          }
+        ]
+      },
+      "hard": {
+        "solvedCount": 0,
+        "problems": []
+      }
+    }
+  }
+}
+```
+
+Possible Errors:
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
 ### Standalone Table Definitions
 
 Leaderboard table creation SQL is maintained in standalone TypeScript at:

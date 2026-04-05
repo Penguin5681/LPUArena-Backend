@@ -2,7 +2,9 @@ import { Request, Response } from 'express';
 import { detectIllegalCodeInjection } from '../services/code-security.service';
 import {
   getLeaderboard,
+  getUserCurrentPoints,
   getUserPointDeductions,
+  getUserSolvedByDifficulty,
   LeaderboardEventType,
   logLeaderboardEvent,
   logSubmission,
@@ -126,5 +128,31 @@ export async function getMyPointDeductions(req: Request, res: Response): Promise
   res.status(200).json({
     total: rows.length,
     data: rows,
+  });
+}
+
+export async function getMyCurrentPoints(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  const points = await getUserCurrentPoints(req.user.userId);
+
+  res.status(200).json({
+    data: points,
+  });
+}
+
+export async function getMySolvedByDifficulty(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  const solvedData = await getUserSolvedByDifficulty(req.user.userId);
+
+  res.status(200).json({
+    data: solvedData,
   });
 }
