@@ -4,6 +4,7 @@ import { env } from './config/env';
 import { initDb } from './db/init';
 import { errorMiddleware } from './middleware/error.middleware';
 import { authRouter } from './routes/auth.routes';
+import { leaderboardRouter } from './routes/leaderboard.routes';
 import { questionRouter } from './routes/question.routes';
 import { submissionRouter } from './routes/submission.routes';
 
@@ -17,6 +18,7 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/questions', questionRouter);
 app.use('/api/judge0', submissionRouter);
 

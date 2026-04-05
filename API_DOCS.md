@@ -403,6 +403,181 @@ Possible Errors:
 }
 ```
 
+### 8) Log Participant Event (Common Event API)
+
+- Method: `POST`
+- URL: `/api/leaderboard/events`
+- Auth: Required (`Bearer token`)
+- Description: Logs frontend monitoring events and deducts points.
+- Supported event types:
+- `out_of_focus`
+- `copy_paste`
+
+Request:
+
+```json
+{
+  "eventType": "copy_paste",
+  "metadata": {
+    "tabSwitchCount": 1
+  }
+}
+```
+
+Deduction rules:
+
+- `out_of_focus`: `1` point deduction each time.
+- `copy_paste`: incremental deduction per user (`1`, then `2`, then `3`, ...).
+
+Success Response (`201`):
+
+```json
+{
+  "message": "Event logged",
+  "eventType": "copy_paste",
+  "penaltyPoints": 3
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "eventType must be one of: 'out_of_focus', 'copy_paste'"
+}
+```
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### 9) Log Submission
+
+- Method: `POST`
+- URL: `/api/leaderboard/submissions`
+- Auth: Required (`Bearer token`)
+- Description: Stores a user submission and applies penalties.
+
+Point rules:
+
+- First correct solve for a user + question adds that question's `points` to leaderboard score.
+- Repeated correct submissions for the same user + question do **not** add points again.
+
+Request:
+
+```json
+{
+  "questionId": 1,
+  "languageId": 54,
+  "sourceCode": "int main(){ return 0; }",
+  "verdict": "Wrong Answer",
+  "isCorrect": false
+}
+```
+
+Deduction rules:
+
+- Wrong submission (`isCorrect = false`): `1` point deduction.
+- Illegal code injection detected in `sourceCode`: `5` additional point deduction.
+
+Success Response (`201`):
+
+```json
+{
+  "message": "Submission logged",
+  "submissionId": "123",
+  "penaltyPoints": 6,
+  "pointsAwarded": 0,
+  "alreadySolved": false,
+  "illegalInjectionDetected": true
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "questionId is required and must be an integer"
+}
+```
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "languageId must be an integer"
+}
+```
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "sourceCode is required and must be a non-empty string"
+}
+```
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "isCorrect must be a boolean"
+}
+```
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### 10) Get Leaderboard
+
+- Method: `GET`
+- URL: `/api/leaderboard`
+- Auth: Required (`Bearer token`)
+- Query Params:
+- `limit` (optional, default `50`, max `100`)
+
+Success Response (`200`):
+
+```json
+{
+  "total": 2,
+  "data": [
+    {
+      "userId": 1,
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "score": -4,
+      "totalDeductions": 4,
+      "copyPasteAttempts": 2,
+      "outOfFocusCount": 1,
+      "illegalInjectionCount": 0,
+      "wrongSubmissionCount": 1
+    }
+  ]
+}
+```
+
+### Standalone Table Definitions
+
+Leaderboard table creation SQL is maintained in standalone TypeScript at:
+
+- `src/db/leaderboard.tables.ts`
+
+These queries are definitions only and are not executed automatically by this change.
+
 ## Global Error Format
 
 Most error responses follow:
