@@ -110,5 +110,19 @@ export async function initDb(): Promise<void> {
     $$;
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS user_heartbeats (
+      user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS user_heartbeats_last_seen_idx
+    ON user_heartbeats (last_seen_at DESC);
+  `);
+
   await seedQuestions();
 }

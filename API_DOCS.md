@@ -403,7 +403,66 @@ Possible Errors:
 }
 ```
 
-### 8) Log Participant Event (Common Event API)
+### 8) Heartbeat (Frontend Ping)
+
+- Method: `POST`
+- URL: `/api/activity/heartbeat`
+- Auth: Required (`Bearer token`)
+- Description: Frontend calls this periodically to mark a user as active in the database.
+- Query Params:
+- `windowSeconds` (optional, default `60`, max `3600`) used to calculate active user count.
+
+Request:
+
+```json
+{
+  "metadata": {
+    "page": "/contest/1",
+    "tabVisible": true
+  }
+}
+```
+
+Success Response (`200`):
+
+```json
+{
+  "message": "Heartbeat recorded",
+  "userId": 1,
+  "lastSeenAt": "2026-01-01T00:00:00.000Z",
+  "activeUsers": 42,
+  "windowSeconds": 60
+}
+```
+
+Possible Errors:
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### 9) Get Live Active Users
+
+- Method: `GET`
+- URL: `/api/activity/live`
+- Description: Returns number of active users seen within the provided window.
+- Query Params:
+- `windowSeconds` (optional, default `60`, max `3600`)
+
+Success Response (`200`):
+
+```json
+{
+  "activeUsers": 42,
+  "windowSeconds": 60
+}
+```
+
+### 10) Log Participant Event (Common Event API)
 
 - Method: `POST`
 - URL: `/api/leaderboard/events`
@@ -457,7 +516,7 @@ Possible Errors:
 }
 ```
 
-### 9) Log Submission
+### 11) Log Submission
 
 - Method: `POST`
 - URL: `/api/leaderboard/submissions`
@@ -467,7 +526,7 @@ Possible Errors:
 Point rules:
 
 - First correct solve for a user + question adds that question's `points` to leaderboard score.
-- Repeated correct submissions for the same user + question do **not** add points again.
+- Repeated correct submissions for the same user + question are **not logged again** and do **not** add points.
 
 Request:
 
@@ -492,10 +551,25 @@ Success Response (`201`):
 {
   "message": "Submission logged",
   "submissionId": "123",
+  "logged": true,
   "penaltyPoints": 6,
   "pointsAwarded": 0,
   "alreadySolved": false,
   "illegalInjectionDetected": true
+}
+```
+
+Repeated-correct response (`201`):
+
+```json
+{
+  "message": "Already solved, submission not logged",
+  "submissionId": "123",
+  "logged": false,
+  "penaltyPoints": 0,
+  "pointsAwarded": 0,
+  "alreadySolved": true,
+  "illegalInjectionDetected": false
 }
 ```
 
@@ -541,7 +615,7 @@ Possible Errors:
 }
 ```
 
-### 10) Get Leaderboard
+### 12) Get Leaderboard
 
 - Method: `GET`
 - URL: `/api/leaderboard`
@@ -567,6 +641,54 @@ Success Response (`200`):
       "wrongSubmissionCount": 1
     }
   ]
+}
+```
+
+### 13) Get My Point Deductions
+
+- Method: `GET`
+- URL: `/api/leaderboard/deductions`
+- Auth: Required (`Bearer token`)
+- Description: Returns deduction history for the logged-in user, including what event/reason caused each deduction.
+- Query Params:
+- `limit` (optional, default `50`, max `200`)
+
+Success Response (`200`):
+
+```json
+{
+  "total": 3,
+  "data": [
+    {
+      "source": "event",
+      "pointsDeducted": 2,
+      "reason": "copy_paste",
+      "occurredAt": "2026-01-01T00:00:00.000Z",
+      "eventType": "copy_paste",
+      "metadata": {
+        "tabSwitchCount": 1
+      }
+    },
+    {
+      "source": "submission",
+      "pointsDeducted": 1,
+      "reason": "wrong_submission",
+      "occurredAt": "2026-01-01T00:00:00.000Z",
+      "submissionId": "55",
+      "questionId": 1,
+      "verdict": "Wrong Answer"
+    }
+  ]
+}
+```
+
+Possible Errors:
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
 }
 ```
 

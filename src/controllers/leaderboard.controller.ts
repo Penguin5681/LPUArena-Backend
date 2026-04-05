@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { detectIllegalCodeInjection } from '../services/code-security.service';
 import {
   getLeaderboard,
+  getUserPointDeductions,
   LeaderboardEventType,
   logLeaderboardEvent,
   logSubmission,
@@ -89,8 +90,9 @@ export async function logParticipantSubmission(req: Request, res: Response): Pro
   });
 
   res.status(201).json({
-    message: 'Submission logged',
+    message: result.logged ? 'Submission logged' : 'Already solved, submission not logged',
     submissionId: result.submissionId,
+    logged: result.logged,
     penaltyPoints: result.penaltyPoints,
     pointsAwarded: result.pointsAwarded,
     alreadySolved: result.alreadySolved,
@@ -103,6 +105,23 @@ export async function getLeaderboardTable(req: Request, res: Response): Promise<
   const limit = Math.min(requestedLimit, 100);
 
   const rows = await getLeaderboard(limit);
+
+  res.status(200).json({
+    total: rows.length,
+    data: rows,
+  });
+}
+
+export async function getMyPointDeductions(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  const requestedLimit = toPositiveInteger(req.query.limit, 50);
+  const limit = Math.min(requestedLimit, 200);
+
+  const rows = await getUserPointDeductions(req.user.userId, limit);
 
   res.status(200).json({
     total: rows.length,

@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import { activityRouter } from './routes/activity.routes';
 import { env } from './config/env';
 import { initDb } from './db/init';
 import { errorMiddleware } from './middleware/error.middleware';
@@ -17,6 +18,7 @@ app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.use('/api/activity', activityRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/questions', questionRouter);

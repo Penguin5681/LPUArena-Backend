@@ -132,6 +132,7 @@ export async function logSubmission(input: SubmissionLogInput): Promise<{
   penaltyPoints: number;
   pointsAwarded: number;
   alreadySolved: boolean;
+  logged: boolean;
 }> {
   const client = await pool.connect();
 
@@ -146,19 +147,22 @@ export async function logSubmission(input: SubmissionLogInput): Promise<{
     let pointsAwarded = 0;
     let alreadySolved = false;
 
+    let existingSolvedSubmissionId: string | null = null;
+
     if (input.isCorrect && input.questionId) {
-      const solvedResult = await client.query<{ solved: boolean }>(
+      const solvedResult = await client.query<{ id: string }>(
         `
-          SELECT EXISTS (
-            SELECT 1
-            FROM user_submissions
-            WHERE user_id = $1 AND question_id = $2 AND is_correct = TRUE
-          ) AS solved
+          SELECT id::text
+          FROM user_submissions
+          WHERE user_id = $1 AND question_id = $2 AND is_correct = TRUE
+          ORDER BY created_at ASC
+          LIMIT 1
         `,
         [input.userId, input.questionId]
       );
 
-      alreadySolved = Boolean(solvedResult.rows[0]?.solved);
+      alreadySolved = Boolean(solvedResult.rows[0]?.id);
+      existingSolvedSubmissionId = solvedResult.rows[0]?.id || null;
 
       if (!alreadySolved) {
         const questionResult = await client.query<{ points: number }>(
@@ -176,6 +180,18 @@ export async function logSubmission(input: SubmissionLogInput): Promise<{
 
         pointsAwarded = questionResult.rows[0].points;
       }
+    }
+
+    if (input.isCorrect && alreadySolved && !input.isIllegalInjection) {
+      await client.query('COMMIT');
+
+      return {
+        submissionId: existingSolvedSubmissionId || 'already-solved',
+        penaltyPoints: 0,
+        pointsAwarded: 0,
+        alreadySolved: true,
+        logged: false,
+      };
     }
 
     const submissionResult = await client.query<{ id: string }>(
@@ -252,6 +268,7 @@ export async function logSubmission(input: SubmissionLogInput): Promise<{
       penaltyPoints,
       pointsAwarded,
       alreadySolved,
+      logged: true,
     };
   } catch (error) {
     await client.query('ROLLBACK');
@@ -314,5 +331,89 @@ export async function getLeaderboard(limit: number): Promise<
     outOfFocusCount: row.out_of_focus_count,
     illegalInjectionCount: row.illegal_injection_count,
     wrongSubmissionCount: row.wrong_submission_count,
+  }));
+}
+
+export async function getUserPointDeductions(
+  userId: number,
+  limit: number
+): Promise<
+  Array<{
+    source: 'event' | 'submission';
+    pointsDeducted: number;
+    reason: string;
+    occurredAt: string;
+    eventType?: string;
+    submissionId?: string;
+    questionId?: number | null;
+    verdict?: string | null;
+    metadata?: Record<string, unknown>;
+  }>
+> {
+  const result = await pool.query<{
+    source: 'event' | 'submission';
+    points_deducted: number;
+    reason: string;
+    occurred_at: string;
+    event_type: string | null;
+    submission_id: string | null;
+    question_id: number | null;
+    verdict: string | null;
+    metadata: Record<string, unknown> | null;
+  }>(
+    `
+      (
+        SELECT
+          'event'::text AS source,
+          le.penalty_points AS points_deducted,
+          le.event_type AS reason,
+          le.created_at::text AS occurred_at,
+          le.event_type,
+          NULL::text AS submission_id,
+          NULL::bigint AS question_id,
+          NULL::text AS verdict,
+          le.metadata
+        FROM leaderboard_events le
+        WHERE le.user_id = $1
+          AND le.penalty_points > 0
+          AND le.event_type IN ('out_of_focus', 'copy_paste', 'fullscreen_exit')
+      )
+      UNION ALL
+      (
+        SELECT
+          'submission'::text AS source,
+          us.penalty_points AS points_deducted,
+          CASE
+            WHEN us.is_correct = FALSE AND us.is_illegal_injection = TRUE THEN 'wrong_submission + illegal_injection'
+            WHEN us.is_correct = FALSE THEN 'wrong_submission'
+            WHEN us.is_illegal_injection = TRUE THEN 'illegal_injection'
+            ELSE 'submission_penalty'
+          END AS reason,
+          us.created_at::text AS occurred_at,
+          NULL::text AS event_type,
+          us.id::text AS submission_id,
+          us.question_id,
+          us.verdict,
+          NULL::jsonb AS metadata
+        FROM user_submissions us
+        WHERE us.user_id = $1
+          AND us.penalty_points > 0
+      )
+      ORDER BY occurred_at DESC
+      LIMIT $2
+    `,
+    [userId, limit]
+  );
+
+  return result.rows.map((row) => ({
+    source: row.source,
+    pointsDeducted: row.points_deducted,
+    reason: row.reason,
+    occurredAt: row.occurred_at,
+    eventType: row.event_type || undefined,
+    submissionId: row.submission_id || undefined,
+    questionId: row.question_id,
+    verdict: row.verdict,
+    metadata: row.metadata || undefined,
   }));
 }
