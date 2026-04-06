@@ -28,7 +28,7 @@ app.use('/api/judge0', submissionRouter);
 app.use(errorMiddleware);
 
 async function startServer(): Promise<void> {
-  await initDb();
+  // await initDb();
   await startSubmissionWorker();
 
   app.listen(env.port, () => {
