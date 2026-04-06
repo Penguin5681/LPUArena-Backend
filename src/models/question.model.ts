@@ -23,6 +23,16 @@ export type ListQuestionsResult = {
   total: number;
 };
 
+export type SolvedQuestionRecord = {
+  id: number;
+  title: string;
+  slug: string;
+  topic: string;
+  difficulty: string;
+  points: number;
+  first_solved_at: string;
+};
+
 export async function listQuestionsPaginated(params: {
   limit: number;
   offset: number;
@@ -83,6 +93,31 @@ export async function listAllQuestions(): Promise<QuestionRecord[]> {
       FROM questions
       ORDER BY id ASC
     `
+  );
+
+  return result.rows;
+}
+
+export async function listSolvedQuestionsByUser(userId: number): Promise<SolvedQuestionRecord[]> {
+  const result = await pool.query<SolvedQuestionRecord>(
+    `
+      SELECT
+        q.id,
+        q.title,
+        q.slug,
+        q.topic,
+        q.difficulty,
+        q.points,
+        MIN(us.created_at)::text AS first_solved_at
+      FROM user_submissions us
+      INNER JOIN questions q ON q.id = us.question_id
+      WHERE us.user_id = $1
+        AND us.is_correct = TRUE
+        AND us.question_id IS NOT NULL
+      GROUP BY q.id, q.title, q.slug, q.topic, q.difficulty, q.points
+      ORDER BY MIN(us.created_at) ASC, q.id ASC
+    `,
+    [userId]
   );
 
   return result.rows;

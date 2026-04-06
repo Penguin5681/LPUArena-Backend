@@ -957,6 +957,51 @@ Possible Errors:
 }
 ```
 
+### 19) Get My Solved Questions
+
+- Method: `GET`
+- URL: `/api/questions/solved`
+- Auth: Required (`Bearer token`)
+- Description: Returns all unique questions solved correctly by the logged-in user.
+
+Success Response (`200`):
+
+```json
+{
+  "total": 2,
+  "data": [
+    {
+      "id": 1,
+      "title": "Two Sum",
+      "slug": "two-sum",
+      "topic": "Arrays",
+      "difficulty": "easy",
+      "points": 12,
+      "first_solved_at": "2026-04-06T10:12:00.000Z"
+    },
+    {
+      "id": 12,
+      "title": "Longest Substring Without Repeating Characters",
+      "slug": "longest-substring-without-repeating-characters",
+      "topic": "Strings",
+      "difficulty": "medium",
+      "points": 19,
+      "first_solved_at": "2026-04-06T10:22:00.000Z"
+    }
+  ]
+}
+```
+
+Possible Errors:
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
 ### Standalone Table Definitions
 
 Leaderboard table creation SQL is maintained in standalone TypeScript at:

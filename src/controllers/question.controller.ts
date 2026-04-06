@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { listAllQuestions, listQuestionsPaginated } from '../models/question.model';
+import {
+  listAllQuestions,
+  listQuestionsPaginated,
+  listSolvedQuestionsByUser,
+} from '../models/question.model';
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 20;
@@ -38,5 +42,19 @@ export async function getAllQuestions(_req: Request, res: Response): Promise<voi
   res.status(200).json({
     total: questions.length,
     data: questions,
+  });
+}
+
+export async function getMySolvedQuestions(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  const solvedQuestions = await listSolvedQuestionsByUser(req.user.userId);
+
+  res.status(200).json({
+    total: solvedQuestions.length,
+    data: solvedQuestions,
   });
 }
