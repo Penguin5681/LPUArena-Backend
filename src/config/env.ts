@@ -64,7 +64,7 @@ function getOptionalBooleanEnv(name: string): boolean | undefined {
 }
 
 export const env = {
-  port: Number(process.env.PORT) || 8080,
+  port: Number(process.env.PORT) || 3000,
   databaseUrl: getRequiredEnv('DATABASE_URL'),
   judgeZeroGcp: getRequiredEnv('JUDGE_ZERO_GCP'),
   judgeZeroNodes: getOptionalListEnv('JUDGE_ZERO_NODES'),
