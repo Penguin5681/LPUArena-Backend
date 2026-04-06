@@ -26,32 +26,54 @@ export type Judge0SubmissionResult = {
   exit_code: number | null;
 };
 
-const POLL_INTERVAL_MS = 1000;
-const MAX_POLL_ATTEMPTS = 25;
-const REQUEST_TIMEOUT_MS = 15000;
+const POLL_INTERVAL_MS = env.judge0PollIntervalMs ?? 1500;
+const MAX_POLL_ATTEMPTS = Math.floor(env.judge0MaxPollAttempts ?? 30);
+const REQUEST_TIMEOUT_MS = Math.floor(env.judge0RequestTimeoutMs ?? 30000);
+const OVERLOAD_RETRY_AFTER_SECONDS = Math.floor(env.judge0OverloadRetryAfterSeconds ?? 5);
 const RETRYABLE_HTTP_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
 
 let nextNodeIndex = 0;
 
-class Judge0HttpError extends Error {
+export class Judge0HttpError extends Error {
   status: number;
   url: string;
+  body: string;
 
   constructor(status: number, body: string, url: string) {
     super(`Judge0 request failed with ${status}: ${body}`);
     this.name = 'Judge0HttpError';
     this.status = status;
     this.url = url;
+    this.body = body;
   }
 }
 
-class Judge0TimeoutError extends Error {
+export class Judge0TimeoutError extends Error {
   url: string;
 
   constructor(url: string, timeoutMs: number) {
     super(`Judge0 request timed out after ${timeoutMs}ms for ${url}`);
     this.name = 'Judge0TimeoutError';
     this.url = url;
+  }
+}
+
+export class Judge0QueueFullError extends Error {
+  url: string;
+  retryAfterSeconds: number;
+
+  constructor(url: string, retryAfterSeconds: number) {
+    super('Judge0 queue is full');
+    this.name = 'Judge0QueueFullError';
+    this.url = url;
+    this.retryAfterSeconds = retryAfterSeconds;
+  }
+}
+
+export class Judge0ResultTimeoutError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'Judge0ResultTimeoutError';
   }
 }
 
@@ -108,6 +130,10 @@ function getPollCandidates(primaryBaseUrl: string, fallbackBaseUrls: string[]): 
 }
 
 function isRetryableSubmitError(error: unknown): boolean {
+  if (error instanceof Judge0QueueFullError) {
+    return false;
+  }
+
   if (error instanceof Judge0TimeoutError) {
     return true;
   }
@@ -125,6 +151,10 @@ function toErrorMessage(error: unknown): string {
   }
 
   return String(error);
+}
+
+function createTraceId(): string {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -159,6 +189,10 @@ async function parseJsonOrThrow(response: Response, url: string): Promise<any> {
   const text = await response.text();
 
   if (!response.ok) {
+    if (response.status === 503 && /queue\s+is\s+full/i.test(text)) {
+      throw new Judge0QueueFullError(url, OVERLOAD_RETRY_AFTER_SECONDS);
+    }
+
     throw new Judge0HttpError(response.status, text, url);
   }
 
@@ -201,7 +235,8 @@ async function submitToNode(baseUrl: string, encodedPayload: Judge0SubmissionReq
 async function pollForResult(
   token: string,
   primaryBaseUrl: string,
-  fallbackBaseUrls: string[]
+  fallbackBaseUrls: string[],
+  traceId: string
 ): Promise<Judge0SubmissionResult> {
   const pollCandidates = getPollCandidates(primaryBaseUrl, fallbackBaseUrls);
   let lastErrorMessage = '';
@@ -219,6 +254,9 @@ async function pollForResult(
         );
 
         if (resultData?.status?.id && resultData.status.id > 2) {
+          console.info(
+            `[Judge0][${traceId}] completed node=${baseUrl} token=${token} status=${resultData.status.id} time=${resultData.time ?? 'n/a'} memory=${resultData.memory ?? 'n/a'}`
+          );
           return resultData;
         }
 
@@ -244,15 +282,18 @@ async function pollForResult(
   }
 
   if (lastErrorMessage) {
-    throw new Error(`Timed out while waiting for Judge0 result. Last error: ${lastErrorMessage}`);
+    throw new Judge0ResultTimeoutError(
+      `Timed out while waiting for Judge0 result. Last error: ${lastErrorMessage}`
+    );
   }
 
-  throw new Error('Timed out while waiting for Judge0 execution result');
+  throw new Judge0ResultTimeoutError('Timed out while waiting for Judge0 execution result');
 }
 
 export async function submitAndWaitForResult(
   payload: Judge0SubmissionRequest
 ): Promise<Judge0SubmissionResult> {
+  const traceId = createTraceId();
   const submitCandidates = getSubmitCandidates();
 
   const encodedPayload = {
@@ -265,17 +306,27 @@ export async function submitAndWaitForResult(
   const submitErrors: string[] = [];
 
   for (const baseUrl of submitCandidates) {
+    let token: string;
+
     try {
-      const token = await submitToNode(baseUrl, encodedPayload);
-      return await pollForResult(token, baseUrl, submitCandidates);
+      console.info(`[Judge0][${traceId}] submit attempt node=${baseUrl}`);
+      token = await submitToNode(baseUrl, encodedPayload);
+      console.info(`[Judge0][${traceId}] submit accepted node=${baseUrl} token=${token}`);
     } catch (error) {
       submitErrors.push(`${baseUrl}: ${toErrorMessage(error)}`);
+      console.warn(`[Judge0][${traceId}] submit failed node=${baseUrl} error=${toErrorMessage(error)}`);
 
       if (!isRetryableSubmitError(error)) {
         throw error;
       }
+
+      continue;
     }
+
+    return await pollForResult(token, baseUrl, submitCandidates, traceId);
   }
 
-  throw new Error(`Failed to submit to all Judge0 nodes. ${submitErrors.join(' | ')}`);
+  throw new Error(
+    `Failed to submit to all Judge0 nodes. traceId=${traceId}. ${submitErrors.join(' | ')}`
+  );
 }

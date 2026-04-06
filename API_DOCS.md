@@ -340,7 +340,7 @@ Possible Errors:
 
 - Method: `POST`
 - URL: `/api/judge0/submit`
-- Description: Submits code to Judge0 (configured via `JUDGE_ZERO_GCP`) and returns execution result.
+- Description: Queues a code execution job and returns immediately with a job id.
 
 Request:
 
@@ -355,24 +355,15 @@ Request:
 }
 ```
 
-Success Response (`200`):
+Success Response (`202`):
 
 ```json
 {
-  "message": "Execution completed",
-  "result": {
-    "token": "<judge0-token>",
-    "status": {
-      "id": 3,
-      "description": "Accepted"
-    },
-    "stdout": "hello judge0\n",
-    "stderr": null,
-    "compile_output": null,
-    "message": null,
-    "time": "0.023",
-    "memory": 7864,
-    "exit_code": 0
+  "message": "Submission accepted",
+  "job": {
+    "id": 101,
+    "status": "queued",
+    "createdAt": "2026-01-01T00:00:00.000Z"
   }
 }
 ```
@@ -392,6 +383,63 @@ Possible Errors:
 ```json
 {
   "message": "language_id is required and must be an integer"
+}
+```
+
+### 7.1) Get Submission Job Status
+
+- Method: `GET`
+- URL: `/api/judge0/submissions/:jobId`
+- Description: Returns latest queue status and, once finished, the Judge0 result.
+
+Success Response (`200`):
+
+```json
+{
+  "job": {
+    "id": 101,
+    "status": "completed",
+    "attemptCount": 1,
+    "maxAttempts": 3,
+    "runAfter": "2026-01-01T00:00:00.000Z",
+    "startedAt": "2026-01-01T00:00:01.000Z",
+    "finishedAt": "2026-01-01T00:00:02.000Z",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:02.000Z",
+    "error": null,
+    "result": {
+      "token": "<judge0-token>",
+      "status": {
+        "id": 3,
+        "description": "Accepted"
+      },
+      "stdout": "hello judge0\n",
+      "stderr": null,
+      "compile_output": null,
+      "message": null,
+      "time": "0.023",
+      "memory": 7864,
+      "exit_code": 0
+    }
+  }
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "jobId must be a positive integer"
+}
+```
+
+- `404 Not Found`
+
+```json
+{
+  "message": "Submission job not found"
 }
 ```
 

@@ -124,5 +124,33 @@ export async function initDb(): Promise<void> {
     ON user_heartbeats (last_seen_at DESC);
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS submission_jobs (
+      id BIGSERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      status TEXT NOT NULL CHECK (status IN ('queued', 'running', 'completed', 'failed')),
+      payload JSONB NOT NULL,
+      result JSONB,
+      error TEXT,
+      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),
+      max_attempts INTEGER NOT NULL DEFAULT 3 CHECK (max_attempts > 0),
+      run_after TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      started_at TIMESTAMPTZ,
+      finished_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS submission_jobs_status_run_after_idx
+    ON submission_jobs (status, run_after, created_at);
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS submission_jobs_user_created_idx
+    ON submission_jobs (user_id, created_at DESC);
+  `);
+
   await seedQuestions();
 }

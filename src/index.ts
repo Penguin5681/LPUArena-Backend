@@ -2,11 +2,13 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 import { activityRouter } from './routes/activity.routes';
 import { env } from './config/env';
+import { initDb } from './db/init';
 import { errorMiddleware } from './middleware/error.middleware';
 import { authRouter } from './routes/auth.routes';
 import { leaderboardRouter } from './routes/leaderboard.routes';
 import { questionRouter } from './routes/question.routes';
 import { submissionRouter } from './routes/submission.routes';
+import { startSubmissionWorker } from './services/submission-worker.service';
 
 const app = express();
 
@@ -25,14 +27,20 @@ app.use('/api/judge0', submissionRouter);
 
 app.use(errorMiddleware);
 
-function startServer(): void {
+async function startServer(): Promise<void> {
+  await initDb();
+  await startSubmissionWorker();
+
   app.listen(env.port, () => {
     console.log(`Server is running on port ${env.port}`);
   });
 }
 
 if (require.main === module) {
-  startServer();
+  startServer().catch((error) => {
+    console.error('Failed to start server', error);
+    process.exit(1);
+  });
 }
 
 export default app;
