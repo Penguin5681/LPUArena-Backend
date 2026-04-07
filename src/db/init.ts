@@ -9,6 +9,7 @@ export async function initDb(): Promise<void> {
       email VARCHAR(255) UNIQUE NOT NULL,
       registration_number VARCHAR(8) UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
+      session_token TEXT,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
   `);
@@ -17,6 +18,11 @@ export async function initDb(): Promise<void> {
   await pool.query(`
     ALTER TABLE users
     ADD COLUMN IF NOT EXISTS registration_number VARCHAR(8);
+  `);
+
+  await pool.query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS session_token TEXT;
   `);
 
   await pool.query(`

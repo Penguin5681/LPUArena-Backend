@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { randomUUID } from 'crypto';
 import { NextFunction, Request, Response } from 'express';
 import { signAuthToken } from '../config/jwt';
 import {
@@ -6,6 +7,7 @@ import {
   findUserByEmail,
   findUserById,
   findUserByRegistrationNumber,
+  updateUserSessionToken,
 } from '../models/user.model';
 
 const REGISTRATION_NUMBER_REGEX = /^\d{8}$/;
@@ -73,7 +75,12 @@ export async function signUp(req: Request, res: Response, next: NextFunction): P
       passwordHash,
     });
 
-    const token = signAuthToken({ userId: user.id, email: user.email });
+    const token = signAuthToken({
+      userId: user.id,
+      email: user.email,
+      sessionId: randomUUID(),
+    });
+    await updateUserSessionToken(user.id, token);
 
     res.status(201).json({
       message: 'User created successfully',
@@ -124,7 +131,12 @@ export async function signIn(req: Request, res: Response, next: NextFunction): P
       return;
     }
 
-    const token = signAuthToken({ userId: user.id, email: user.email });
+    const token = signAuthToken({
+      userId: user.id,
+      email: user.email,
+      sessionId: randomUUID(),
+    });
+    await updateUserSessionToken(user.id, token);
 
     res.status(200).json({
       message: 'Sign in successful',
@@ -151,6 +163,32 @@ export async function me(req: Request, res: Response, next: NextFunction): Promi
     }
 
     res.status(200).json({ user: sanitizeUser(user) });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getSessionToken(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const user = await findUserById(req.user.userId);
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    res.status(200).json({
+      sessionToken: user.session_token,
+    });
   } catch (error) {
     next(error);
   }

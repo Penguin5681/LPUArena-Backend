@@ -253,6 +253,54 @@ Possible Errors:
 }
 ```
 
+### 4.1) Current Session Token
+
+- Method: `GET`
+- URL: `/api/auth/session-token`
+- Auth: Required (`Bearer token`)
+
+Success Response (`200`):
+
+```json
+{
+  "sessionToken": "<jwt>"
+}
+```
+
+Possible Errors:
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Invalid or expired token"
+}
+```
+
+- `401 Unauthorized`
+
+```json
+{
+  "message": "Session expired. Please sign in again."
+}
+```
+
+- `404 Not Found`
+
+```json
+{
+  "message": "User not found"
+}
+```
+
 ### 5) Get Questions (Paginated)
 
 - Method: `GET`

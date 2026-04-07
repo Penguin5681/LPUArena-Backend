@@ -4,6 +4,7 @@ import { env } from './env';
 export type AuthTokenPayload = {
   userId: number;
   email: string;
+  sessionId: string;
 };
 
 export function signAuthToken(payload: AuthTokenPayload): string {
