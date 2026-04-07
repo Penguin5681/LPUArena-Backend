@@ -451,6 +451,23 @@ Possible Errors:
 }
 ```
 
+### 7.2) Get Platform Config
+
+- Method: `GET`
+- URL: `/api/leaderboard/config`
+- Description: Returns global platform flags used by frontend.
+
+Success Response (`200`):
+
+```json
+{
+  "data": {
+    "isComingSoon": false,
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  }
+}
+```
+
 ### 8) Heartbeat (Frontend Ping)
 
 - Method: `POST`
@@ -1047,6 +1064,146 @@ Possible Errors:
 ```json
 {
   "message": "Unauthorized"
+}
+```
+
+### 20) Admin Update Platform Config (Password Protected)
+
+- Method: `POST`
+- URL: `/api/leaderboard/admin/config`
+- Description: Updates global platform config.
+- Auth: Password in request body.
+
+Request:
+
+```json
+{
+  "password": "sdhkljf23173089",
+  "isComingSoon": true
+}
+```
+
+Success Response (`200`):
+
+```json
+{
+  "message": "Config updated",
+  "data": {
+    "isComingSoon": true,
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  }
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "isComingSoon must be a boolean"
+}
+```
+
+- `403 Forbidden`
+
+```json
+{
+  "message": "Invalid password"
+}
+```
+
+### 21) Admin Disqualify Candidate (Password Protected)
+
+- Method: `POST`
+- URL: `/api/leaderboard/admin/disqualify`
+- Description: Disqualifies a user, removes them from active leaderboard rankings, and stores them in disqualified candidates.
+- Auth: Password in request body.
+
+Request:
+
+```json
+{
+  "password": "sdhkljf23173089",
+  "registrationNumber": "12345678",
+  "reason": "Malpractice detected"
+}
+```
+
+Success Response (`200`):
+
+```json
+{
+  "message": "Candidate disqualified successfully",
+  "data": {
+    "userId": 42,
+    "registrationNumber": "12345678",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "reason": "Malpractice detected",
+    "disqualifiedAt": "2026-01-01T00:00:00.000Z",
+    "alreadyDisqualified": false
+  }
+}
+```
+
+Possible Errors:
+
+- `400 Bad Request`
+
+```json
+{
+  "message": "registrationNumber is required and must be exactly 8 digits"
+}
+```
+
+- `404 Not Found`
+
+```json
+{
+  "message": "User not found"
+}
+```
+
+### 22) Admin Get Disqualified Candidates (Password Protected)
+
+- Method: `POST`
+- URL: `/api/leaderboard/admin/disqualified`
+- Description: Returns disqualified candidates list with leaderboard snapshot at disqualification time.
+- Auth: Password in request body.
+
+Request:
+
+```json
+{
+  "password": "sdhkljf23173089",
+  "limit": 100
+}
+```
+
+Success Response (`200`):
+
+```json
+{
+  "total": 1,
+  "data": [
+    {
+      "userId": 42,
+      "registrationNumber": "12345678",
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "reason": "Malpractice detected",
+      "disqualifiedAt": "2026-01-01T00:00:00.000Z",
+      "snapshot": {
+        "score": 120,
+        "totalDeductions": 4,
+        "copyPasteAttempts": 2,
+        "outOfFocusCount": 1,
+        "illegalInjectionCount": 0,
+        "wrongSubmissionCount": 3
+      }
+    }
+  ]
 }
 ```
 

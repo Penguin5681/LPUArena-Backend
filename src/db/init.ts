@@ -152,5 +152,40 @@ export async function initDb(): Promise<void> {
     ON submission_jobs (user_id, created_at DESC);
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS config (
+      id SMALLINT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+      is_coming_soon BOOLEAN NOT NULL DEFAULT FALSE,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    INSERT INTO config (id, is_coming_soon)
+    VALUES (1, FALSE)
+    ON CONFLICT (id) DO NOTHING;
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS disqualified_candidates (
+      id BIGSERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+      reason TEXT,
+      snapshot_score INTEGER NOT NULL DEFAULT 0,
+      snapshot_total_deductions INTEGER NOT NULL DEFAULT 0,
+      snapshot_copy_paste_attempts INTEGER NOT NULL DEFAULT 0,
+      snapshot_out_of_focus_count INTEGER NOT NULL DEFAULT 0,
+      snapshot_illegal_injection_count INTEGER NOT NULL DEFAULT 0,
+      snapshot_wrong_submission_count INTEGER NOT NULL DEFAULT 0,
+      disqualified_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS disqualified_candidates_disqualified_at_idx
+    ON disqualified_candidates (disqualified_at DESC);
+  `);
+
   await seedQuestions();
 }

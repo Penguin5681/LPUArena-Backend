@@ -1,19 +1,25 @@
 import { Request, Response } from 'express';
 import { detectIllegalCodeInjection } from '../services/code-security.service';
 import {
+  disqualifyCandidate,
   getCheatersLeaderboard,
+  getComingSoonConfig,
+  getDisqualifiedCandidates,
   getFinalLeaderboard,
   getLeaderboard,
   getMostRecentCheater,
   getUserCurrentPoints,
   getUserPointDeductions,
   getUserSolvedByDifficulty,
+  isCandidateDisqualified,
   LeaderboardEventType,
   logLeaderboardEvent,
   logSubmission,
+  updateComingSoonConfig,
 } from '../models/leaderboard.model';
 
 const ALLOWED_EVENTS: LeaderboardEventType[] = ['out_of_focus', 'copy_paste', 'fullscreen_exit'];
+const REGISTRATION_NUMBER_REGEX = /^\d{8}$/;
 
 function toPositiveInteger(value: unknown, fallback: number): number {
   const parsed = Number(value);
@@ -47,6 +53,12 @@ export async function logParticipantEvent(req: Request, res: Response): Promise<
     res.status(400).json({
       message: "eventType must be one of: 'out_of_focus', 'copy_paste', 'fullscreen_exit'",
     });
+    return;
+  }
+
+  const disqualified = await isCandidateDisqualified(req.user.userId);
+  if (disqualified) {
+    res.status(403).json({ message: 'Candidate is disqualified' });
     return;
   }
 
@@ -88,6 +100,12 @@ export async function logParticipantSubmission(req: Request, res: Response): Pro
 
   if (typeof isCorrect !== 'boolean') {
     res.status(400).json({ message: 'isCorrect must be a boolean' });
+    return;
+  }
+
+  const disqualified = await isCandidateDisqualified(req.user.userId);
+  if (disqualified) {
+    res.status(403).json({ message: 'Candidate is disqualified' });
     return;
   }
 
@@ -195,5 +213,76 @@ export async function getMostRecentCheaterAdmin(_req: Request, res: Response): P
 
   res.status(200).json({
     data: row,
+  });
+}
+
+export async function getConfig(req: Request, res: Response): Promise<void> {
+  const config = await getComingSoonConfig();
+
+  res.status(200).json({
+    data: config,
+  });
+}
+
+export async function updateConfigAdmin(req: Request, res: Response): Promise<void> {
+  const { isComingSoon } = req.body;
+
+  if (typeof isComingSoon !== 'boolean') {
+    res.status(400).json({ message: 'isComingSoon must be a boolean' });
+    return;
+  }
+
+  const updated = await updateComingSoonConfig(isComingSoon);
+
+  res.status(200).json({
+    message: 'Config updated',
+    data: updated,
+  });
+}
+
+export async function disqualifyCandidateAdmin(req: Request, res: Response): Promise<void> {
+  const { registrationNumber, reason } = req.body;
+
+  if (typeof registrationNumber !== 'string' || !REGISTRATION_NUMBER_REGEX.test(registrationNumber)) {
+    res.status(400).json({ message: 'registrationNumber is required and must be exactly 8 digits' });
+    return;
+  }
+
+  if (reason !== undefined && typeof reason !== 'string') {
+    res.status(400).json({ message: 'reason must be a string when provided' });
+    return;
+  }
+
+  let result;
+
+  try {
+    result = await disqualifyCandidate({
+      registrationNumber,
+      reason: typeof reason === 'string' ? reason.trim() : undefined,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === 'User not found') {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    throw error;
+  }
+
+  res.status(200).json({
+    message: result.alreadyDisqualified
+      ? 'Candidate disqualification updated'
+      : 'Candidate disqualified successfully',
+    data: result,
+  });
+}
+
+export async function getDisqualifiedCandidatesAdmin(req: Request, res: Response): Promise<void> {
+  const limit = toBodyLimit(req.body.limit, 100, 1000);
+  const rows = await getDisqualifiedCandidates(limit);
+
+  res.status(200).json({
+    total: rows.length,
+    data: rows,
   });
 }

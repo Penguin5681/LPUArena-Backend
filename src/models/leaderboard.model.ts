@@ -7,6 +7,15 @@ export type LeaderboardEventType =
   | 'illegal_injection'
   | 'fullscreen_exit';
 
+type LeaderboardParticipantSnapshot = {
+  score: number;
+  total_deductions: number;
+  copy_paste_attempts: number;
+  out_of_focus_count: number;
+  illegal_injection_count: number;
+  wrong_submission_count: number;
+};
+
 type ParticipantRow = {
   score: number;
   total_deductions: number;
@@ -54,6 +63,285 @@ async function ensureParticipant(client: PoolClient, userId: number): Promise<vo
     `,
     [userId]
   );
+}
+
+export async function isCandidateDisqualified(userId: number): Promise<boolean> {
+  const result = await pool.query<{ user_id: number }>(
+    `
+      SELECT user_id
+      FROM disqualified_candidates
+      WHERE user_id = $1
+      LIMIT 1
+    `,
+    [userId]
+  );
+
+  return Boolean(result.rows[0]);
+}
+
+export async function getComingSoonConfig(): Promise<{
+  isComingSoon: boolean;
+  updatedAt: string;
+}> {
+  await pool.query(
+    `
+      INSERT INTO config (id, is_coming_soon)
+      VALUES (1, FALSE)
+      ON CONFLICT (id) DO NOTHING
+    `
+  );
+
+  const result = await pool.query<{ is_coming_soon: boolean; updated_at: string }>(
+    `
+      SELECT is_coming_soon, updated_at::text
+      FROM config
+      WHERE id = 1
+      LIMIT 1
+    `
+  );
+
+  if (!result.rows[0]) {
+    throw new Error('Failed to load config row');
+  }
+
+  return {
+    isComingSoon: result.rows[0].is_coming_soon,
+    updatedAt: result.rows[0].updated_at,
+  };
+}
+
+export async function updateComingSoonConfig(value: boolean): Promise<{
+  isComingSoon: boolean;
+  updatedAt: string;
+}> {
+  const result = await pool.query<{ is_coming_soon: boolean; updated_at: string }>(
+    `
+      INSERT INTO config (id, is_coming_soon, updated_at)
+      VALUES (1, $1, NOW())
+      ON CONFLICT (id)
+      DO UPDATE SET
+        is_coming_soon = EXCLUDED.is_coming_soon,
+        updated_at = NOW()
+      RETURNING is_coming_soon, updated_at::text
+    `,
+    [value]
+  );
+
+  return {
+    isComingSoon: result.rows[0].is_coming_soon,
+    updatedAt: result.rows[0].updated_at,
+  };
+}
+
+export async function disqualifyCandidate(input: {
+  registrationNumber: string;
+  reason?: string;
+}): Promise<{
+  userId: number;
+  registrationNumber: string;
+  name: string;
+  email: string;
+  reason: string | null;
+  disqualifiedAt: string;
+  alreadyDisqualified: boolean;
+}> {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const userResult = await client.query<{
+      id: number;
+      name: string;
+      email: string;
+      registration_number: string;
+    }>(
+      `
+        SELECT id, name, email, registration_number
+        FROM users
+        WHERE registration_number = $1
+        LIMIT 1
+      `,
+      [input.registrationNumber]
+    );
+
+    if (!userResult.rows[0]) {
+      throw new Error('User not found');
+    }
+
+    const existingDisqualified = await client.query<{ id: number }>(
+      `
+        SELECT id
+        FROM disqualified_candidates
+        WHERE user_id = $1
+        LIMIT 1
+        FOR UPDATE
+      `,
+      [userResult.rows[0].id]
+    );
+
+    const snapshotResult = await client.query<LeaderboardParticipantSnapshot>(
+      `
+        SELECT
+          score,
+          total_deductions,
+          copy_paste_attempts,
+          out_of_focus_count,
+          illegal_injection_count,
+          wrong_submission_count
+        FROM leaderboard_participants
+        WHERE user_id = $1
+        LIMIT 1
+      `,
+      [userResult.rows[0].id]
+    );
+
+    const snapshot = snapshotResult.rows[0] || {
+      score: 0,
+      total_deductions: 0,
+      copy_paste_attempts: 0,
+      out_of_focus_count: 0,
+      illegal_injection_count: 0,
+      wrong_submission_count: 0,
+    };
+
+    const disqualifiedAtResult = await client.query<{ disqualified_at: string }>(
+      `
+        INSERT INTO disqualified_candidates (
+          user_id,
+          reason,
+          snapshot_score,
+          snapshot_total_deductions,
+          snapshot_copy_paste_attempts,
+          snapshot_out_of_focus_count,
+          snapshot_illegal_injection_count,
+          snapshot_wrong_submission_count,
+          disqualified_at,
+          updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+        ON CONFLICT (user_id)
+        DO UPDATE SET
+          reason = EXCLUDED.reason,
+          snapshot_score = EXCLUDED.snapshot_score,
+          snapshot_total_deductions = EXCLUDED.snapshot_total_deductions,
+          snapshot_copy_paste_attempts = EXCLUDED.snapshot_copy_paste_attempts,
+          snapshot_out_of_focus_count = EXCLUDED.snapshot_out_of_focus_count,
+          snapshot_illegal_injection_count = EXCLUDED.snapshot_illegal_injection_count,
+          snapshot_wrong_submission_count = EXCLUDED.snapshot_wrong_submission_count,
+          disqualified_at = NOW(),
+          updated_at = NOW()
+        RETURNING disqualified_at::text
+      `,
+      [
+        userResult.rows[0].id,
+        input.reason || null,
+        snapshot.score,
+        snapshot.total_deductions,
+        snapshot.copy_paste_attempts,
+        snapshot.out_of_focus_count,
+        snapshot.illegal_injection_count,
+        snapshot.wrong_submission_count,
+      ]
+    );
+
+    await client.query(
+      `
+        DELETE FROM leaderboard_participants
+        WHERE user_id = $1
+      `,
+      [userResult.rows[0].id]
+    );
+
+    await client.query('COMMIT');
+
+    return {
+      userId: userResult.rows[0].id,
+      registrationNumber: userResult.rows[0].registration_number,
+      name: userResult.rows[0].name,
+      email: userResult.rows[0].email,
+      reason: input.reason || null,
+      disqualifiedAt: disqualifiedAtResult.rows[0].disqualified_at,
+      alreadyDisqualified: Boolean(existingDisqualified.rows[0]),
+    };
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function getDisqualifiedCandidates(limit: number): Promise<
+  Array<{
+    userId: number;
+    registrationNumber: string;
+    name: string;
+    email: string;
+    reason: string | null;
+    disqualifiedAt: string;
+    snapshot: {
+      score: number;
+      totalDeductions: number;
+      copyPasteAttempts: number;
+      outOfFocusCount: number;
+      illegalInjectionCount: number;
+      wrongSubmissionCount: number;
+    };
+  }>
+> {
+  const result = await pool.query<{
+    user_id: number;
+    registration_number: string;
+    name: string;
+    email: string;
+    reason: string | null;
+    disqualified_at: string;
+    snapshot_score: number;
+    snapshot_total_deductions: number;
+    snapshot_copy_paste_attempts: number;
+    snapshot_out_of_focus_count: number;
+    snapshot_illegal_injection_count: number;
+    snapshot_wrong_submission_count: number;
+  }>(
+    `
+      SELECT
+        dc.user_id,
+        u.registration_number,
+        u.name,
+        u.email,
+        dc.reason,
+        dc.disqualified_at::text,
+        dc.snapshot_score,
+        dc.snapshot_total_deductions,
+        dc.snapshot_copy_paste_attempts,
+        dc.snapshot_out_of_focus_count,
+        dc.snapshot_illegal_injection_count,
+        dc.snapshot_wrong_submission_count
+      FROM disqualified_candidates dc
+      INNER JOIN users u ON u.id = dc.user_id
+      ORDER BY dc.disqualified_at DESC
+      LIMIT $1
+    `,
+    [limit]
+  );
+
+  return result.rows.map((row) => ({
+    userId: row.user_id,
+    registrationNumber: row.registration_number,
+    name: row.name,
+    email: row.email,
+    reason: row.reason,
+    disqualifiedAt: row.disqualified_at,
+    snapshot: {
+      score: row.snapshot_score,
+      totalDeductions: row.snapshot_total_deductions,
+      copyPasteAttempts: row.snapshot_copy_paste_attempts,
+      outOfFocusCount: row.snapshot_out_of_focus_count,
+      illegalInjectionCount: row.snapshot_illegal_injection_count,
+      wrongSubmissionCount: row.snapshot_wrong_submission_count,
+    },
+  }));
 }
 
 async function getParticipantForUpdate(client: PoolClient, userId: number): Promise<ParticipantRow> {
@@ -315,6 +603,8 @@ export async function getLeaderboard(limit: number): Promise<
         lp.wrong_submission_count
       FROM leaderboard_participants lp
       INNER JOIN users u ON u.id = lp.user_id
+      LEFT JOIN disqualified_candidates dc ON dc.user_id = lp.user_id
+      WHERE dc.user_id IS NULL
       ORDER BY lp.score DESC, lp.total_deductions ASC, lp.updated_at ASC
       LIMIT $1
     `,
@@ -621,6 +911,8 @@ export async function getFinalLeaderboard(limit: number): Promise<
       LEFT JOIN leaderboard_participants lp ON lp.user_id = u.id
       LEFT JOIN event_counts ec ON ec.user_id = u.id
       LEFT JOIN submission_counts sc ON sc.user_id = u.id
+      LEFT JOIN disqualified_candidates dc ON dc.user_id = u.id
+      WHERE dc.user_id IS NULL
       ORDER BY COALESCE(lp.score, 0) DESC, COALESCE(sc.total_solved, 0) DESC, u.created_at ASC
       LIMIT $1
     `,
@@ -687,7 +979,9 @@ export async function getCheatersLeaderboard(limit: number): Promise<
         MAX(le.created_at)::text AS last_cheat_at
       FROM leaderboard_events le
       INNER JOIN users u ON u.id = le.user_id
+      LEFT JOIN disqualified_candidates dc ON dc.user_id = u.id
       WHERE le.event_type IN ('out_of_focus', 'copy_paste', 'fullscreen_exit', 'illegal_injection')
+        AND dc.user_id IS NULL
       GROUP BY u.id, u.name, u.email
       ORDER BY total_cheat_attempts DESC, total_penalty_points DESC, MAX(le.created_at) DESC
       LIMIT $1
@@ -738,7 +1032,9 @@ export async function getMostRecentCheater(): Promise<{
         le.created_at::text AS occurred_at
       FROM leaderboard_events le
       INNER JOIN users u ON u.id = le.user_id
+      LEFT JOIN disqualified_candidates dc ON dc.user_id = u.id
       WHERE le.event_type IN ('out_of_focus', 'copy_paste', 'fullscreen_exit', 'illegal_injection')
+        AND dc.user_id IS NULL
       ORDER BY le.created_at DESC
       LIMIT 1
     `

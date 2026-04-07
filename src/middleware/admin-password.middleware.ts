@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-const ADMIN_API_PASSWORD = 'lovejihad';
+const ADMIN_API_PASSWORD = 'algoarena_admin_420';
 
 export function adminPasswordMiddleware(req: Request, res: Response, next: NextFunction): void {
   const { password } = req.body;
